@@ -414,6 +414,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     openTab('/pages/menu_order/mzta-menu-order.html');
   });
 
+  document.getElementById('btnOpenInboxAssistant').addEventListener('click', () => {
+    browser.runtime.sendMessage({ command: 'inbox_open' });
+  });
+
+  document.getElementById('btnManageInboxSettings').addEventListener('click', () => {
+    openTab('/pages/inbox/mzta-inbox-settings.html');
+  });
+
   document.getElementById('btnManageTagsInfo').addEventListener('click', () => {
     openTab('/pages/addtags/mzta-add-tags.html');
   });

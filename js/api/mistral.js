@@ -24,6 +24,8 @@
 //                                           max_context_length, aliases, deprecation, ... } ] }
 //  - Streaming deltas: choices[0].delta.content is either a string or an array of chunks:
 //    { type: 'text', text } or { type: 'thinking', thinking: [ { type: 'text', text } ] }
+//  - Agents built in Mistral Studio are called through the Conversations API (see below)
+//    when an agent id is configured; otherwise the Chat Completions API is used.
 
 export const MISTRAL_API_HOST = 'https://api.mistral.ai';
 export const MISTRAL_REASONING_EFFORTS = ['', 'none', 'low', 'medium', 'high'];
@@ -41,6 +43,8 @@ export class Mistral {
   safe_prompt = false;
   stream = false;
   max_retries = 3;
+  agent_id = '';
+  agent_version = '';
 
   constructor({
     apiKey = '',
@@ -52,7 +56,11 @@ export class Mistral {
     safe_prompt = false,
     stream = false,
     max_retries = 3,
+    agent_id = '',
+    agent_version = '',
   } = {}) {
+    this.agent_id = String(agent_id || '').trim();
+    this.agent_version = String(agent_version ?? '').trim();
     this.apiKey = (apiKey || '').trim();
     this.model = model;
     this.temperature = temperature;
@@ -208,10 +216,125 @@ export class Mistral {
     return JSON.stringify(errorJSON);
   }
 
+  // ---------------------------------------------------------------------------
+  // Agents (Mistral Studio) via the Conversations API.
+  // Verified against the official SDK: GET /v1/agents (array of Agent), GET /v1/agents/{id}/aliases,
+  // POST /v1/conversations { agent_id, agent_version, inputs, stream, store, completion_args }.
+  // ---------------------------------------------------------------------------
+
+  isAgentMode() {
+    return this.agent_id !== '';
+  }
+
+  fetchAgents = async () => {
+    try {
+      const response = await this._fetchWithRetry(MISTRAL_API_HOST + "/v1/agents?page=0&page_size=100", {
+        method: "GET",
+        headers: this._headers(),
+      });
+      if (!response.ok) {
+        const errorDetail = await response.text();
+        console.error("[ThunderAI] Mistral agents request failed: " + response.status + ", Detail: " + errorDetail);
+        return { ok: false, error: errorDetail };
+      }
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : (data.data || data.items || []);
+      return { ok: true, response: list.filter(a => a && a.id).map(a => ({
+        id: a.id,
+        name: a.name || a.id,
+        description: a.description || '',
+        model: a.model || '',
+        version: a.version,
+        tools: (a.tools || []).map(t => t.type).filter(Boolean),
+      })) };
+    } catch (error) {
+      console.error("[ThunderAI] Mistral agents request failed: " + error);
+      return { is_exception: true, ok: false, error: "Mistral API request failed: " + error };
+    }
+  }
+
+  fetchAgentAliases = async (agentId) => {
+    try {
+      const response = await this._fetchWithRetry(MISTRAL_API_HOST + "/v1/agents/" + encodeURIComponent(agentId) + "/aliases", {
+        method: "GET",
+        headers: this._headers(),
+      });
+      if (!response.ok) return { ok: false, error: await response.text() };
+      const data = await response.json();
+      return { ok: true, response: (Array.isArray(data) ? data : []).map(a => ({ alias: a.alias, version: a.version })) };
+    } catch (error) {
+      return { is_exception: true, ok: false, error: "Mistral API request failed: " + error };
+    }
+  }
+
+  // Converts a chat history into Conversations API input entries. The full history is sent with
+  // store=false, so Mistral does not keep the conversation (privacy) and no conversation id is needed.
+  static messagesToEntries(messages) {
+    return messages
+      .filter(m => m.role === 'user' || m.role === 'assistant')
+      .map(m => m.role === 'user'
+        ? { type: 'message.input', role: 'user', content: m.content }
+        : { type: 'message.output', role: 'assistant', content: m.content });
+  }
+
+  buildConversationBody(messages, { json_mode = false } = {}) {
+    const body = {
+      agent_id: this.agent_id,
+      inputs: Mistral.messagesToEntries(messages),
+      stream: this.stream,
+      store: false,
+    };
+    const version = String(this.agent_version || '').trim();
+    if (version !== '') {
+      body.agent_version = /^\d+$/.test(version) ? parseInt(version) : version;
+    }
+    // The agent's own completion settings (model, temperature, instructions) are kept;
+    // only the output format is requested when the caller needs JSON.
+    if (json_mode) {
+      body.completion_args = { response_format: { type: 'json_object' } };
+    }
+    return body;
+  }
+
+  // Parses one Conversations API stream event (or a non streamed output entry).
+  // Returns { text, thinking, tool, sources, error, done, conversation_id }.
+  static parseConversationEvent(data) {
+    const out = { text: '', thinking: '', tool: '', sources: [], error: '', done: false, conversation_id: '' };
+    if (!data || typeof data !== 'object') return out;
+    switch (data.type) {
+      case 'conversation.response.started':
+        out.conversation_id = data.conversation_id || '';
+        break;
+      case 'message.output.delta':
+      case 'message.output': {
+        const content = data.content;
+        const parsed = Mistral.parseContent(typeof content === 'string' ? content : (Array.isArray(content) ? content : [content]));
+        out.text = parsed.text;
+        out.thinking = parsed.thinking;
+        const chunks = Array.isArray(content) ? content : [content];
+        for (const c of chunks) {
+          if (c && c.type === 'tool_reference' && c.title) out.sources.push({ title: c.title, url: c.url || '' });
+        }
+        break;
+      }
+      case 'tool.execution.started':
+        out.tool = data.name || 'tool';
+        break;
+      case 'conversation.response.error':
+        out.error = (data.message || 'Error') + (data.code ? ' (' + data.code + ')' : '');
+        break;
+      case 'conversation.response.done':
+        out.done = true;
+        break;
+    }
+    return out;
+  }
+
   fetchResponse = async (messages, options = {}) => {
     try {
-      const body = this.buildRequestBody(messages, options);
-      return await this._fetchWithRetry(MISTRAL_API_HOST + "/v1/chat/completions", {
+      const agentMode = this.isAgentMode();
+      const body = agentMode ? this.buildConversationBody(messages, options) : this.buildRequestBody(messages, options);
+      return await this._fetchWithRetry(MISTRAL_API_HOST + (agentMode ? "/v1/conversations" : "/v1/chat/completions"), {
         method: "POST",
         headers: this._headers(),
         body: JSON.stringify(body),

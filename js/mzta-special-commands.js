@@ -48,7 +48,8 @@
             break;
         case 'mistral_api':
             if (!prefs.mistral_api_key) return browser.i18n.getMessage('mistral_empty_apikey');
-            if (!prefs.mistral_model)   return browser.i18n.getMessage('mistral_empty_model');
+            // A Mistral Studio agent brings its own model.
+            if (!prefs.mistral_model && !prefs.mistral_agent_id) return browser.i18n.getMessage('mistral_empty_model');
             break;
     }
     return null;

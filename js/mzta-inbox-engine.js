@@ -24,7 +24,6 @@
 import { prefs_default } from '../options/mzta-options-default.js';
 import {
     getMailBody,
-    htmlBodyToPlainText,
     getConnectionType,
     getLanguageDisplayName,
 } from './mzta-utils.js';
@@ -342,12 +341,31 @@ async function parseAddressList(list) {
     return out;
 }
 
+// Converts an HTML body to text for the AI. Unlike a plain textContent it keeps block
+// boundaries as new lines (so quoted history can be detected) and drops quoted replies
+// (blockquote, Thunderbird/Gmail/Outlook quote containers), hidden elements, styles and scripts.
+export function htmlToText(html) {
+    const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
+    if (!doc.body) return '';
+    doc.querySelectorAll('style, script, head, title, blockquote, .gmail_quote, .moz-cite-prefix, #divRplyFwdMsg, #appendonsend, table.moz-main-header, [style*="display:none"], [style*="display: none"]').forEach(e => e.remove());
+    doc.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+    doc.querySelectorAll('p, div, li, tr, h1, h2, h3, h4, h5, h6, table, hr').forEach(el => el.append('\n'));
+    return doc.body.textContent.replace(/\u00a0/g, ' ');
+}
+
+function messageText(body) {
+    let text = body.html ? htmlToText(body.html) : body.text;
+    if (!text || text.trim() === '') text = body.text || '';
+    return text;
+}
+
 // Cleans an email body for the AI: drops quoted history, collapses whitespace, shortens links.
 export function cleanSnippet(text, maxLen = 600) {
     let t = String(text || '').replace(/\r/g, '');
     t = t.split('\n').filter(l => !l.trim().startsWith('>')).join('\n');
     const cut = t.search(/\n(On .{5,200}wrote:|Am .{5,200}schrieb .{1,100}:|Le .{5,200}a écrit :|-{2,}\s*Original Message\s*-{2,}|From: .+\n(Sent|Date): )/i);
-    if (cut > 40) t = t.slice(0, cut);
+    // Cut the quoted history as soon as the user wrote something before it.
+    if (cut > 0 && t.slice(0, cut).trim() !== '') t = t.slice(0, cut);
     t = t.replace(/https?:\/\/\S{25,}/g, '[link]');
     t = t.replace(/<\/?email[^>]*>/gi, '');
     t = t.replace(/\s+/g, ' ').trim();
@@ -419,9 +437,7 @@ export async function buildDigest(message, { withBody = true, snippetLength = 60
             digest.listUnsubscribePost = (h['list-unsubscribe-post'] || [''])[0] || '';
             digest.isList = !!(digest.listUnsubscribe || (h['list-id'] || [])[0] || /bulk|list/i.test((h['precedence'] || [''])[0] || ''));
             const body = await getMailBody(full, message.id);
-            let text = body.html ? htmlBodyToPlainText(body.html) : body.text;
-            if (!text || text.trim() === '') text = body.text;
-            digest.snippet = cleanSnippet(text, snippetLength);
+            digest.snippet = cleanSnippet(messageText(body), snippetLength);
         } catch (e) {
             console.warn('[ThunderAI | Inbox] Could not read message ' + message.id + ': ' + e);
         }
@@ -797,8 +813,7 @@ export async function buildBriefPrompt(entries, categories) {
 export async function buildReplyPrompt(message, intent = '', identityName = '') {
     const full = await browser.messages.getFull(message.id);
     const body = await getMailBody(full, message.id);
-    let text = body.html ? htmlBodyToPlainText(body.html) : body.text;
-    text = cleanSnippet(text, 6000);
+    const text = cleanSnippet(messageText(body), 6000);
     const prefs = await browser.storage.sync.get({ default_chatgpt_lang: prefs_default.default_chatgpt_lang, default_sign_name: prefs_default.default_sign_name });
     const signer = prefs.default_sign_name || identityName || '';
     let p = browser.i18n.getMessage('prompt_inbox_reply_full_text') + '\n';
@@ -883,7 +898,7 @@ export async function classifyFollowups(items, { signal = null } = {}) {
             try {
                 const full = await browser.messages.getFull(m.id);
                 const body = await getMailBody(full, m.id);
-                snippet = cleanSnippet(body.html ? htmlBodyToPlainText(body.html) : body.text, 500);
+                snippet = cleanSnippet(messageText(body), 500);
             } catch (e) {
                 console.warn('[ThunderAI | Inbox] Could not read sent message ' + m.id + ': ' + e);
             }

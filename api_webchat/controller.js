@@ -104,8 +104,13 @@ if (worker) {
         const i18n_msg_key = integration === 'openai_comp' ? 'OpenAIComp_api_request_failed' : `${integration}_api_request_failed`;
         i18nStrings[i18n_msg_key] = browser.i18n.getMessage(i18n_msg_key);
         i18nStrings["error_connection_interrupted"] = browser.i18n.getMessage('error_connection_interrupted');
+        if (integration === 'mistral') {
+            i18nStrings["mistral_sources"] = browser.i18n.getMessage('mistral_sources');
+            i18nStrings["mistral_agent_tool"] = browser.i18n.getMessage('mistral_agent_tool');
+        }
 
-        messageInput.setModel(prefs_api[`${integration_prefix}_model`]);
+        const mistral_agent = (integration === 'mistral' && prefs_api.mistral_agent_id) ? prefs_api.mistral_agent_id : '';
+        messageInput.setModel(mistral_agent ? 'Agent ' + mistral_agent : prefs_api[`${integration_prefix}_model`]);
         
         let llmName = "API";
         switch(integration) {
@@ -160,6 +165,8 @@ if (worker) {
                 { key: 'extended_thinking_budget', labelKey: 'prefs_OptionText_anthropic_extended_thinking_budget', type: 'number_gt_zero' }
             ],
             mistral: [
+                { key: 'agent_id', labelKey: 'prefs_OptionText_mistral_agent', type: 'string' },
+                { key: 'agent_version', labelKey: 'prefs_OptionText_mistral_agent_version', type: 'string' },
                 { key: 'system_prompt', labelKey: 'Mistral_System_Prompt', type: 'string' },
                 { key: 'temperature', labelKey: 'prefs_api_temperature', type: 'string' },
                 { key: 'max_tokens', labelKey: 'prefs_OptionText_mistral_max_tokens', type: 'number_gt_zero' },
@@ -222,7 +229,7 @@ if (worker) {
         
         messagesArea.appendUserMessage(getAPIsInitMessageString({
             api_string: api_strings[integration],
-            model_string: prefs_api[`${integration_prefix}_model`],
+            model_string: mistral_agent ? '' : prefs_api[`${integration_prefix}_model`],
             host_string: prefs_api[`${integration_prefix}_host`],
             version_string: prefs_api[`${integration_prefix}_version`],
             additional_messages: additional_text_elements

@@ -65,7 +65,9 @@ export const integration_options_config = {
         max_tokens: 0,
         system_prompt: '',
         reasoning_effort: '',
-        safe_prompt: false
+        safe_prompt: false,
+        agent_id: '',          // Mistral Studio agent: when set, the Conversations API is used instead of Chat Completions
+        agent_version: ''      // agent version number or alias (e.g. "production"), empty = latest
     }
 };
 

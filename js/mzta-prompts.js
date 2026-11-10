@@ -94,7 +94,7 @@
     << All the API settings defined in the default options, with the same IDs. >>
 */
 
-import { integration_options_config } from "../../options/mzta-options-default.js";
+import { integration_options_config } from "../options/mzta-options-default.js";
 
 const defaultPrompts = [
     {

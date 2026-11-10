@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ThunderAI - __MSG_inbox_settings_title__</title>
+    <link rel="stylesheet" href="mzta-inbox.css">
+    <link rel="stylesheet" href="../_lib/connection-ui.css">
+    <link rel="icon" href="../../images/icon-16px.png">
+</head>
+<body>
+<div class="ia-wrap">
+    <header class="ia-header">
+        <div class="ia-brand">
+            <img src="../../images/icon-32px.png" alt="">
+            <div>
+                <h1>__MSG_inbox_settings_title__</h1>
+                <div class="ia-sub">__MSG_inbox_settings_subtitle__</div>
+            </div>
+        </div>
+        <div class="ia-header-right">
+            <button id="btn_open_assistant" class="ia-btn primary">&#10024; __MSG_inbox_open_assistant__</button>
+        </div>
+    </header>
+
+    <h2 class="ia-section">&#129302; __MSG_inbox_settings_ai_title__</h2>
+    <div class="ia-card">
+        <p class="ia-muted">__MSG_inbox_settings_ai_info__</p>
+        <table id="miczPrefs">
+            <tr class="specific_integration">
+                <td><span class="opt_title">__MSG_prefs_OptionText_use_specific_integration__</span></td>
+                <td>
+                    <label>
+                        <input type="checkbox" id="inbox_use_specific_integration" name="inbox_use_specific_integration" class="option-input" />
+                        __MSG_inbox_settings_specific_info__
+                    </label>
+                </td>
+            </tr>
+            <tr id="connection_ui_anchor" style="display:none"></tr>
+            <tr id="connection_ui_end" style="display:none"><td colspan="2"></td></tr>
+        </table>
+    </div>
+
+    <h2 class="ia-section">&#128100; __MSG_inbox_settings_about_title__</h2>
+    <div class="ia-card">
+        <textarea id="inbox_user_context" class="option-input" rows="4" placeholder="__MSG_inbox_settings_about_placeholder__"></textarea>
+        <div class="ia-note">__MSG_inbox_settings_about_info__</div>
+    </div>
+
+    <h2 class="ia-section">&#127991; __MSG_inbox_settings_categories_title__</h2>
+    <div class="ia-card">
+        <p class="ia-muted">__MSG_inbox_settings_categories_info__</p>
+        <table class="ia-table ia-cat-editor">
+            <thead><tr>
+                <th>__MSG_inbox_cat_col_on__</th>
+                <th></th>
+                <th style="width:18%">__MSG_inbox_cat_col_name__</th>
+                <th style="width:32%">__MSG_inbox_cat_col_description__</th>
+                <th>__MSG_inbox_cat_col_action__</th>
+                <th title="__MSG_inbox_cat_col_auto_info__">__MSG_inbox_cat_col_auto__</th>
+                <th></th>
+            </tr></thead>
+            <tbody id="cat_body"></tbody>
+        </table>
+        <div class="ia-actions-row" style="margin-top:10px;margin-bottom:0">
+            <button id="btn_add_category" class="ia-btn">+ __MSG_inbox_cat_add__</button>
+            <span class="spacer"></span>
+            <span id="cat_unsaved" class="ia-muted hidden">__MSG_inbox_unsaved__</span>
+            <button id="btn_save_categories" class="ia-btn primary">__MSG_inbox_cat_save__</button>
+        </div>
+    </div>
+
+    <h2 class="ia-section">&#9889; __MSG_inbox_settings_auto_title__</h2>
+    <div class="ia-card">
+        <table class="ia-settings-table"><tbody>
+            <tr>
+                <td>__MSG_inbox_settings_auto_sort__<small>__MSG_inbox_settings_auto_sort_info__</small></td>
+                <td><label class="ia-inline"><input type="checkbox" id="inbox_auto_sort" class="option-input"> __MSG_inbox_settings_auto_sort_enable__</label>
+                    <div class="ia-note" id="auto_summary"></div></td>
+            </tr>
+            <tr>
+                <td>__MSG_inbox_settings_auto_accounts__<small>__MSG_inbox_settings_auto_accounts_info__</small></td>
+                <td><div id="auto_accounts" class="ia-chips"></div></td>
+            </tr>
+            <tr>
+                <td>__MSG_inbox_settings_auto_only_inbox__</td>
+                <td><label class="ia-inline"><input type="checkbox" id="inbox_auto_only_inbox" class="option-input"> __MSG_inbox_settings_auto_only_inbox_info__</label></td>
+            </tr>
+            <tr>
+                <td>__MSG_inbox_settings_badge__</td>
+                <td><label class="ia-inline"><input type="checkbox" id="inbox_show_badge" class="option-input"> __MSG_inbox_settings_badge_info__</label></td>
+            </tr>
+        </tbody></table>
+    </div>
+
+    <h2 class="ia-section">&#128737; __MSG_inbox_settings_safety_title__</h2>
+    <div class="ia-card">
+        <table class="ia-settings-table"><tbody>
+            <tr>
+                <td>__MSG_inbox_settings_protected__<small>__MSG_inbox_settings_protected_info__</small></td>
+                <td><textarea id="protected_senders" rows="4" placeholder="boss@company.com&#10;@family.org"></textarea>
+                    <div class="ia-actions-row" style="margin:6px 0 0"><span class="spacer"></span><span id="protected_unsaved" class="ia-muted hidden">__MSG_inbox_unsaved__</span><button id="btn_save_protected" class="ia-btn small primary">__MSG_inbox_save__</button></div></td>
+            </tr>
+            <tr>
+                <td>__MSG_inbox_settings_protect_contacts__</td>
+                <td><label class="ia-inline"><input type="checkbox" id="inbox_protect_contacts" class="option-input"> __MSG_inbox_settings_protect_contacts_info__</label></td>
+            </tr>
+            <tr>
+                <td>__MSG_inbox_settings_skip_flagged__</td>
+                <td><label class="ia-inline"><input type="checkbox" id="inbox_skip_flagged" class="option-input"> __MSG_inbox_settings_skip_flagged_info__</label></td>
+            </tr>
+        </tbody></table>
+    </div>
+
+    <h2 class="ia-section">&#128204; __MSG_inbox_settings_rules_title__</h2>
+    <div class="ia-card">
+        <p class="ia-muted">__MSG_inbox_settings_rules_info__</p>
+        <table class="ia-table"><tbody id="rules_body"></tbody></table>
+        <div class="ia-actions-row" style="margin-top:10px;margin-bottom:0">
+            <input type="text" id="rule_sender" placeholder="__MSG_inbox_settings_rule_placeholder__" style="flex:1;min-width:220px">
+            <select id="rule_category"></select>
+            <button id="btn_add_rule" class="ia-btn">+ __MSG_inbox_settings_rule_add__</button>
+        </div>
+    </div>
+
+    <h2 class="ia-section">&#128274; __MSG_inbox_settings_privacy_title__</h2>
+    <div class="ia-card">
+        <table class="ia-settings-table"><tbody>
+            <tr>
+                <td>__MSG_inbox_settings_read_content__<small>__MSG_inbox_settings_read_content_info__</small></td>
+                <td><label class="ia-inline"><input type="checkbox" id="inbox_read_content" class="option-input"> __MSG_inbox_settings_read_content_enable__</label></td>
+            </tr>
+            <tr>
+                <td>__MSG_inbox_settings_snippet__<small>__MSG_inbox_settings_snippet_info__</small></td>
+                <td><input type="number" id="inbox_snippet_length" class="option-input" min="0" max="4000" step="50"></td>
+            </tr>
+            <tr>
+                <td>__MSG_inbox_settings_batch__<small>__MSG_inbox_settings_batch_info__</small></td>
+                <td><input type="number" id="inbox_batch_size" class="option-input" min="1" max="50"></td>
+            </tr>
+            <tr>
+                <td>__MSG_inbox_settings_parallel__<small>__MSG_inbox_settings_parallel_info__</small></td>
+                <td><input type="number" id="inbox_parallel_requests" class="option-input" min="1" max="4"></td>
+            </tr>
+            <tr>
+                <td>__MSG_inbox_settings_cache__<small>__MSG_inbox_settings_cache_info__</small></td>
+                <td><button id="btn_clear_cache" class="ia-btn small danger">__MSG_inbox_settings_cache_clear__</button> <span id="cache_info" class="ia-muted"></span></td>
+            </tr>
+        </tbody></table>
+    </div>
+
+    <h2 class="ia-section">&#128221; __MSG_inbox_settings_prompt_title__</h2>
+    <div class="ia-card">
+        <p class="ia-muted">__MSG_inbox_settings_prompt_info__</p>
+        <textarea id="triage_prompt" rows="10"></textarea>
+        <div class="ia-actions-row" style="margin-top:8px;margin-bottom:0">
+            <button id="btn_reset_prompt" class="ia-btn">__MSG_reset_default__</button>
+            <span class="spacer"></span>
+            <span id="prompt_unsaved" class="ia-muted hidden">__MSG_inbox_unsaved__</span>
+            <button id="btn_save_prompt" class="ia-btn primary" disabled>__MSG_inbox_save__</button>
+        </div>
+    </div>
+</div>
+
+<div id="ia_toast" class="ia-toast hidden"><span id="ia_toast_text"></span><button id="ia_toast_undo" class="hidden"></button></div>
+
+<script src="mzta-inbox-settings.js" type="module"></script>
+<script src="../../js/mzta-i18n.js"></script>
+</body>
+</html>

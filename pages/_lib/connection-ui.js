@@ -590,6 +590,27 @@ export async function injectConnectionUI({
   <tr class="conntype_mistral_api${tr_class ? ` ${tr_class}` : ''}">
     <td>
       <label>
+        <span class="opt_title">__MSG_prefs_OptionText_mistral_agent__</span>
+      </label>
+    </td>
+    <td>
+      <button id="${modelId_prefix || ''}btnUpdateMistralAgents">__MSG_Mistral_Agents_Fetch__</button> <span id="${modelId_prefix || ''}mistral_agent_fetch_loading" style="display:none">__MSG_Loading__</span><br>
+      <label>
+        <select id="${modelId_prefix || ''}mistral_agent_id" name="${modelId_prefix || ''}mistral_agent_id" class="option-input">
+          <option value="">__MSG_prefs_OptionText_mistral_agent_none__</option>
+        </select>
+      </label>
+      <label>
+        __MSG_prefs_OptionText_mistral_agent_version__
+        <input type="text" id="${modelId_prefix || ''}mistral_agent_version" name="${modelId_prefix || ''}mistral_agent_version" class="option-input" list="${modelId_prefix || ''}mistral_agent_aliases" placeholder="__MSG_prefs_OptionText_mistral_agent_version_placeholder__" />
+        <datalist id="${modelId_prefix || ''}mistral_agent_aliases"></datalist>
+      </label>
+      <i class="small_info">__MSG_prefs_OptionText_mistral_agent_Info__</i>
+    </td>
+  </tr>
+  <tr class="conntype_mistral_api${tr_class ? ` ${tr_class}` : ''}">
+    <td>
+      <label>
         <span class="opt_title">__MSG_prefs_api_temperature__</span>
       </label>
     </td>
@@ -818,6 +839,7 @@ export async function injectConnectionUI({
     anthropic_model: '',
     anthropic_version: '',
     mistral_model: prefs_default.mistral_model,
+    mistral_agent_id: prefs_default.mistral_agent_id,
     chatgpt_win_height: 0,
     chatgpt_win_width: 0
   });
@@ -1090,6 +1112,65 @@ export async function injectConnectionUI({
     select_mistral_model.value = prefs.mistral_model;
   }
   select_mistral_model.addEventListener("change", () => warn_Mistral_APIKeyEmpty(modelId_prefix));
+
+  // Mistral Studio agents
+  const select_mistral_agent = document.getElementById(getPrefixedId('mistral_agent_id'));
+  if (prefs.mistral_agent_id && !Array.from(select_mistral_agent.options).some(o => o.value === prefs.mistral_agent_id)) {
+    select_mistral_agent.appendChild(new Option(prefs.mistral_agent_id, prefs.mistral_agent_id));
+  }
+  select_mistral_agent.value = prefs.mistral_agent_id || '';
+  const loadMistralAgentAliases = async () => {
+    const datalist = document.getElementById(getPrefixedId('mistral_agent_aliases'));
+    datalist.textContent = '';
+    const agentId = select_mistral_agent.value;
+    if (!agentId) return;
+    // Only suggest aliases when the permission was already granted: no prompt on a simple change.
+    if (!(await messenger.permissions.contains({ origins: ["https://*.mistral.ai/*"] }))) return;
+    const res = await new Mistral({ apiKey: document.getElementById(getPrefixedId("mistral_api_key")).value }).fetchAgentAliases(agentId);
+    if (!res.ok) return;
+    for (const a of res.response) {
+      datalist.appendChild(new Option(a.alias + ' (v' + a.version + ')', a.alias));
+    }
+  };
+  select_mistral_agent.addEventListener("change", () => {
+    warn_Mistral_APIKeyEmpty(modelId_prefix);
+    loadMistralAgentAliases();
+  });
+
+  document.getElementById(getPrefixedId('btnUpdateMistralAgents')).addEventListener('click', async () => {
+    const loading_el = document.getElementById(getPrefixedId('mistral_agent_fetch_loading'));
+    loading_el.style.display = 'inline';
+    // The permission request must be the first awaited call to keep the user gesture.
+    let granted = await messenger.permissions.request({ origins: ["https://*.mistral.ai/*"] });
+    if (!granted) {
+      loading_el.style.display = 'none';
+      alert(browser.i18n.getMessage("Optional_Permission_Denied_Model_Fetching"));
+      return;
+    }
+    const data = await new Mistral({ apiKey: document.getElementById(getPrefixedId("mistral_api_key")).value }).fetchAgents();
+    loading_el.style.display = 'none';
+    if (!data.ok) {
+      let errorDetail;
+      try {
+        errorDetail = Mistral.parseErrorMessage(JSON.parse(data.error));
+      } catch (e) {
+        errorDetail = data.error;
+      }
+      alert(browser.i18n.getMessage("Mistral_Agents_Error_fetching") + ": " + errorDetail);
+      return;
+    }
+    if (data.response.length === 0) {
+      alert(browser.i18n.getMessage("Mistral_Agents_None"));
+      return;
+    }
+    for (const agent of data.response) {
+      const label = agent.name + (agent.model ? ' · ' + agent.model : '') + (agent.tools.length ? ' · ' + agent.tools.join(', ') : '');
+      const existing = Array.from(select_mistral_agent.options).find(o => o.value === agent.id);
+      if (existing) existing.text = label;
+      else select_mistral_agent.appendChild(new Option(label, agent.id));
+    }
+    loadMistralAgentAliases();
+  });
 
   document.getElementById(getPrefixedId('btnUpdateMistralModels')).addEventListener('click', async () => {
     const loading_el = document.getElementById(getPrefixedId('mistral_model_fetch_loading'));
@@ -1641,7 +1722,11 @@ function warn_Mistral_APIKeyEmpty(modelId_prefix) {
   let apiKeyInput = document.getElementById(getPrefixedId('mistral_api_key'));
   let btnFetchMistralModels = document.getElementById(getPrefixedId('btnUpdateMistralModels'));
   let modelMistral = getModelEl('mistral_model', modelId_prefix);
+  let btnFetchMistralAgents = document.getElementById(getPrefixedId('btnUpdateMistralAgents'));
+  let agentMistral = document.getElementById(getPrefixedId('mistral_agent_id'));
   if (!apiKeyInput || !btnFetchMistralModels || !modelMistral) return;
+  const agentSelected = !!(agentMistral && agentMistral.value);
+  if (btnFetchMistralAgents) btnFetchMistralAgents.disabled = (apiKeyInput.value === '');
   if(apiKeyInput.value === ''){
     apiKeyInput.style.border = '2px solid red';
     btnFetchMistralModels.disabled = true;
@@ -1650,7 +1735,8 @@ function warn_Mistral_APIKeyEmpty(modelId_prefix) {
     apiKeyInput.style.border = '';
     btnFetchMistralModels.disabled = false;
     toggleTomSelectDisabled(modelMistral, false);
-    if((modelMistral.selectedIndex === -1)||(modelMistral.value === '')){
+    // A Mistral Studio agent brings its own model: the model is optional then.
+    if(!agentSelected && ((modelMistral.selectedIndex === -1)||(modelMistral.value === ''))){
       modelMistral.style.border = '2px solid red';
     }else{
       modelMistral.style.border = '';

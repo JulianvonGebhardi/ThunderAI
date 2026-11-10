@@ -32,8 +32,19 @@ let taLog = null;
 let conversationHistory = [];
 let assistantResponseAccumulator = '';
 let thinkingAccumulator = '';
+let sourcesAccumulator = [];
+let streamError = '';
 
 function finishResponse(stopped = false) {
+    // Sources found by agent tools (web search, document library) are shown with the
+    // reasoning block, so they never end up in the text inserted into an email.
+    if (sourcesAccumulator.length > 0) {
+        const lines = sourcesAccumulator.map(s => '- ' + s.title + (s.url ? ' (' + s.url + ')' : ''));
+        const sourcesText = '\n\n' + ((i18nStrings && i18nStrings["mistral_sources"]) || 'Sources') + ':\n' + lines.join('\n');
+        thinkingAccumulator += sourcesText;
+        postMessage({ type: 'newThinkingToken', payload: { token: sourcesText } });
+        sourcesAccumulator = [];
+    }
     taLog.log("AI full response" + (stopped ? " [STOPPED]" : "") + ": " + assistantResponseAccumulator);
     conversationHistory.push({ role: 'assistant', content: assistantResponseAccumulator });
     assistantResponseAccumulator = '';
@@ -67,6 +78,11 @@ self.onmessage = async function(event) {
             }
         }
         mistral = new Mistral(config);
+        // A new configuration starts a new conversation.
+        conversationHistory = [];
+        assistantResponseAccumulator = '';
+        thinkingAccumulator = '';
+        sourcesAccumulator = [];
         do_debug = event.data.do_debug;
         i18nStrings = event.data.i18nStrings || {};
         taLog = new taLogger('model-worker-mistral', do_debug);
@@ -117,7 +133,11 @@ self.onmessage = async function(event) {
                     // Flush a last line without trailing newline, if any.
                     const last = parseSSELine(buffer);
                     if (last) handleChunk(last);
-                    finishResponse(false);
+                    if (streamError) {
+                        reportStreamError(failedLabel);
+                    } else {
+                        finishResponse(false);
+                    }
                     break;
                 }
                 buffer += decoder.decode(value, { stream: true });
@@ -133,6 +153,8 @@ self.onmessage = async function(event) {
             const interrupted = (i18nStrings && i18nStrings["error_connection_interrupted"]) || "Connection interrupted";
             assistantResponseAccumulator = '';
             thinkingAccumulator = '';
+            sourcesAccumulator = [];
+            conversationHistory.pop();
             postMessage({ type: 'error', payload: failedLabel + ": " + interrupted + " (" + e.message + ")" });
         }
     } else if (event.data.type === 'stop') {
@@ -140,7 +162,46 @@ self.onmessage = async function(event) {
     }
 };
 
+function reportStreamError(failedLabel) {
+    conversationHistory.pop();
+    assistantResponseAccumulator = '';
+    thinkingAccumulator = '';
+    sourcesAccumulator = [];
+    const message = streamError;
+    streamError = '';
+    postMessage({ type: 'error', payload: failedLabel + ": " + message });
+}
+
+// Conversations API (Mistral Studio agents) stream events.
+function handleConversationEvent(event) {
+    const parsed = Mistral.parseConversationEvent(event);
+    if (parsed.error) {
+        streamError = parsed.error;
+        return;
+    }
+    if (parsed.tool) {
+        const label = ((i18nStrings && i18nStrings["mistral_agent_tool"]) || 'Using tool') + ': ' + parsed.tool + '\n';
+        thinkingAccumulator += label;
+        postMessage({ type: 'newThinkingToken', payload: { token: label } });
+    }
+    if (parsed.thinking) {
+        thinkingAccumulator += parsed.thinking;
+        postMessage({ type: 'newThinkingToken', payload: { token: parsed.thinking } });
+    }
+    for (const src of parsed.sources) {
+        if (!sourcesAccumulator.some(s => s.title === src.title && s.url === src.url)) sourcesAccumulator.push(src);
+    }
+    if (parsed.text) {
+        assistantResponseAccumulator += parsed.text;
+        postMessage({ type: 'newToken', payload: { token: parsed.text } });
+    }
+}
+
 function handleChunk(parsedLine) {
+    if (mistral.isAgentMode() && typeof parsedLine.type === 'string') {
+        handleConversationEvent(parsedLine);
+        return;
+    }
     if (parsedLine.object === 'error' || (parsedLine.message && !parsedLine.choices)) {
         taLog.error("Error chunk received: " + JSON.stringify(parsedLine));
         return;

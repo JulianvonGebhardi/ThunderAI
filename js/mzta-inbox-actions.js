@@ -233,10 +233,15 @@ export async function executePlan(plan, { source = 'manual', label = '', onProgr
         if (onProgress) onProgress({ done: processed, total });
     }
 
+    // Partially applied changes (e.g. tag set but move failed) stay in the records so undo can revert them,
+    // but only fully applied items count as done.
+    let done = 0;
     for (const item of plan) {
-        if (item.record && (item.record.moved || item.record.changed.length > 0)) records.push(item.record);
+        if (item.record && (item.record.moved || item.record.changed.length > 0)) {
+            records.push(item.record);
+            if (!item.failed) done++;
+        }
     }
-    const done = records.length;
     let entryId = null;
     if (done > 0 || failed > 0) {
         entryId = await addActivity({

@@ -2474,5 +2474,1432 @@
   "prefsInfoDesc_9": {
     "message": "To use the Mistral AI API, you need a Mistral AI API Key and must choose a model. Mistral AI is a European provider: requests go directly from Thunderbird to api.mistral.ai.",
     "description": "Description shown in the options page when the Mistral connection type is selected"
+  },
+  "inbox_page_title": {
+    "message": "Inbox Assistant",
+    "description": "Inbox Assistant: page title and feature name"
+  },
+  "inbox_page_subtitle": {
+    "message": "Sort, clean up and follow up on your mail with AI, across all your accounts.",
+    "description": "Inbox Assistant: page subtitle"
+  },
+  "inbox_browser_action_title": {
+    "message": "ThunderAI Inbox Assistant: sort and clean up your inbox with AI",
+    "description": "Inbox Assistant: tooltip of the main toolbar button"
+  },
+  "inbox_browser_action_label": {
+    "message": "Inbox Assistant",
+    "description": "Inbox Assistant: label of the main toolbar button"
+  },
+  "inbox_menu_folder": {
+    "message": "ThunderAI: sort and clean up this folder",
+    "description": "Inbox Assistant: folder pane context menu entry"
+  },
+  "inbox_menu_selection": {
+    "message": "ThunderAI: sort selected messages with AI",
+    "description": "Inbox Assistant: message list context menu entry"
+  },
+  "inbox_menu_open": {
+    "message": "ThunderAI Inbox Assistant",
+    "description": "Inbox Assistant: Tools menu entry"
+  },
+  "inbox_settings": {
+    "message": "Settings",
+    "description": "Inbox Assistant: button opening the settings page"
+  },
+  "inbox_open_settings": {
+    "message": "Open settings",
+    "description": "Inbox Assistant: button in the warning banner"
+  },
+  "inbox_open_assistant": {
+    "message": "Open Inbox Assistant",
+    "description": "Inbox Assistant: button that opens the dashboard"
+  },
+  "prefs_OptionText_inbox_Info": {
+    "message": "Let the AI sort your mail into categories, clean up newsletters and old mail, find emails that need a reply and optionally sort new mail automatically. Works with multiple accounts.",
+    "description": "Options page: description of the Inbox Assistant row"
+  },
+  "inbox_provider_label": {
+    "message": "AI:",
+    "description": "Inbox Assistant: label before the provider and model name"
+  },
+  "inbox_provider_none": {
+    "message": "No API integration configured",
+    "description": "Inbox Assistant: shown when no usable AI connection exists"
+  },
+  "inbox_error_needs_api": {
+    "message": "The Inbox Assistant needs an API integration (for example Mistral AI). ChatGPT Web cannot be used. Choose an API in the Inbox Assistant settings or in the ThunderAI options.",
+    "description": "Inbox Assistant: warning when the configured connection is ChatGPT Web or missing"
+  },
+  "inbox_error_generic": {
+    "message": "Error",
+    "description": "Inbox Assistant: prefix of error messages"
+  },
+  "inbox_error_timeout": {
+    "message": "The AI did not answer in time. Please try again.",
+    "description": "Inbox Assistant: error when an AI request times out"
+  },
+  "inbox_error_no_destination": {
+    "message": "No destination folder found for the action \"$ACTION$\" in this account.",
+    "description": "Inbox Assistant: error when e.g. no Trash folder exists",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_scope_accounts": {
+    "message": "Accounts",
+    "description": "Inbox Assistant: scope label"
+  },
+  "inbox_scope_folders": {
+    "message": "Folders",
+    "description": "Inbox Assistant: scope label"
+  },
+  "inbox_scope_folders_inbox": {
+    "message": "Inbox",
+    "description": "Inbox Assistant: folder scope option"
+  },
+  "inbox_scope_folders_inbox_sub": {
+    "message": "Inbox and subfolders",
+    "description": "Inbox Assistant: folder scope option"
+  },
+  "inbox_scope_folders_all": {
+    "message": "All folders (except Sent, Trash, Junk, Archives)",
+    "description": "Inbox Assistant: folder scope option"
+  },
+  "inbox_scope_folders_custom": {
+    "message": "Choose folders…",
+    "description": "Inbox Assistant: folder scope option"
+  },
+  "inbox_scope_folders_choose": {
+    "message": "Selected folders (Ctrl+click for several)",
+    "description": "Inbox Assistant: label of the folder multi-select"
+  },
+  "inbox_scope_period": {
+    "message": "Period",
+    "description": "Inbox Assistant: scope label"
+  },
+  "inbox_scope_period_1": {
+    "message": "Last 24 hours",
+    "description": "Inbox Assistant: period option"
+  },
+  "inbox_scope_period_7": {
+    "message": "Last 7 days",
+    "description": "Inbox Assistant: period option"
+  },
+  "inbox_scope_period_30": {
+    "message": "Last 30 days",
+    "description": "Inbox Assistant: period option"
+  },
+  "inbox_scope_period_90": {
+    "message": "Last 3 months",
+    "description": "Inbox Assistant: period option"
+  },
+  "inbox_scope_period_365": {
+    "message": "Last 12 months",
+    "description": "Inbox Assistant: period option"
+  },
+  "inbox_scope_period_all": {
+    "message": "All time",
+    "description": "Inbox Assistant: period option"
+  },
+  "inbox_scope_max": {
+    "message": "Max emails",
+    "description": "Inbox Assistant: scope label: maximum number of emails to analyze"
+  },
+  "inbox_scope_unread_only": {
+    "message": "Unread only",
+    "description": "Inbox Assistant: scope checkbox"
+  },
+  "inbox_tab_triage": {
+    "message": "Sort",
+    "description": "Inbox Assistant: tab name: AI triage"
+  },
+  "inbox_tab_senders": {
+    "message": "Clean up",
+    "description": "Inbox Assistant: tab name: senders and cleanup"
+  },
+  "inbox_tab_followups": {
+    "message": "Replies & follow-ups",
+    "description": "Inbox Assistant: tab name"
+  },
+  "inbox_tab_activity": {
+    "message": "Activity & undo",
+    "description": "Inbox Assistant: tab name"
+  },
+  "inbox_btn_scan": {
+    "message": "Sort with AI",
+    "description": "Inbox Assistant: main button that starts the triage"
+  },
+  "inbox_btn_stop": {
+    "message": "Stop",
+    "description": "Inbox Assistant: button that stops the current operation"
+  },
+  "inbox_use_cache": {
+    "message": "Reuse previous results",
+    "description": "Inbox Assistant: checkbox: use cached classifications"
+  },
+  "inbox_use_cache_info": {
+    "message": "Emails that were already classified are not sent to the AI again. Uncheck to re-analyze everything.",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_btn_brief": {
+    "message": "Inbox brief",
+    "description": "Inbox Assistant: button that writes an AI summary of what needs attention"
+  },
+  "inbox_btn_apply_suggested": {
+    "message": "Apply suggested actions…",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_brief_title": {
+    "message": "Your inbox brief",
+    "description": "Inbox Assistant: title of the brief box"
+  },
+  "inbox_brief_loading": {
+    "message": "Writing your brief…",
+    "description": "Inbox Assistant: loading text"
+  },
+  "inbox_progress_collect": {
+    "message": "Collecting emails… $COUNT$ found",
+    "description": "Inbox Assistant: progress text",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_progress_read": {
+    "message": "Reading emails $DONE$ / $TOTAL$",
+    "description": "Inbox Assistant: progress text",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_progress_analyze": {
+    "message": "AI is sorting $DONE$ / $TOTAL$",
+    "description": "Inbox Assistant: progress text",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_progress_apply": {
+    "message": "Applying $DONE$ / $TOTAL$",
+    "description": "Inbox Assistant: progress text",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_progress_followups": {
+    "message": "Checking sent emails $DONE$ / $TOTAL$",
+    "description": "Inbox Assistant: progress text",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_progress_followups_ai": {
+    "message": "AI is checking which emails expect an answer…",
+    "description": "Inbox Assistant: progress text"
+  },
+  "inbox_progress_lists": {
+    "message": "Looking for unsubscribe links $DONE$ / $TOTAL$",
+    "description": "Inbox Assistant: progress text",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_no_messages": {
+    "message": "No emails found for the selected accounts, folders and period.",
+    "description": "Inbox Assistant: message"
+  },
+  "inbox_scan_done": {
+    "message": "$COUNT$ emails sorted.",
+    "description": "Inbox Assistant: message after triage",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_scan_partial": {
+    "message": "$COUNT$ emails could not be classified by the AI and were put in \"Other\".",
+    "description": "Inbox Assistant: warning after triage",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_scan_stopped": {
+    "message": "Stopped. $COUNT$ emails sorted so far.",
+    "description": "Inbox Assistant: message after stopping",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_empty_title": {
+    "message": "Let the AI run your inbox",
+    "description": "Inbox Assistant: empty state title"
+  },
+  "inbox_empty_hint": {
+    "message": "Choose accounts, folders and period above, then click \"Sort with AI\". Nothing is moved or deleted until you confirm.",
+    "description": "Inbox Assistant: empty state text"
+  },
+  "inbox_feature_triage": {
+    "message": "Smart sorting",
+    "description": "Inbox Assistant: feature card title"
+  },
+  "inbox_feature_triage_desc": {
+    "message": "Every email gets a category, a priority and a one-line summary. Define your own categories in plain words.",
+    "description": "Inbox Assistant: feature card text"
+  },
+  "inbox_feature_cleanup": {
+    "message": "One-click cleanup",
+    "description": "Inbox Assistant: feature card title"
+  },
+  "inbox_feature_cleanup_desc": {
+    "message": "See who fills your inbox, unsubscribe from newsletters and archive old mail in bulk.",
+    "description": "Inbox Assistant: feature card text"
+  },
+  "inbox_feature_followups": {
+    "message": "Never miss a reply",
+    "description": "Inbox Assistant: feature card title"
+  },
+  "inbox_feature_followups_desc": {
+    "message": "Find emails waiting for your answer and sent emails nobody answered, with AI drafts.",
+    "description": "Inbox Assistant: feature card text"
+  },
+  "inbox_feature_safe": {
+    "message": "Safe by design",
+    "description": "Inbox Assistant: feature card title"
+  },
+  "inbox_feature_safe_desc": {
+    "message": "Preview before acting, protected senders, a full activity log and undo. Your own API key, no extra servers.",
+    "description": "Inbox Assistant: feature card text"
+  },
+  "inbox_all": {
+    "message": "All",
+    "description": "Inbox Assistant: filter pill showing all categories"
+  },
+  "inbox_suggested": {
+    "message": "Suggested",
+    "description": "Inbox Assistant: label before the suggested actions of a category"
+  },
+  "inbox_suggest_keep": {
+    "message": "Keep in place",
+    "description": "Inbox Assistant: suggested action when the category does nothing"
+  },
+  "inbox_apply_to": {
+    "message": "Apply to $COUNT$",
+    "description": "Inbox Assistant: button applying the category actions",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_collapse": {
+    "message": "Collapse / expand",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_select_group": {
+    "message": "Select all emails of this category",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_change_category": {
+    "message": "Change the category of this email",
+    "description": "Inbox Assistant: tooltip of the category select"
+  },
+  "inbox_pin_sender": {
+    "message": "Always put emails from $EMAIL$ in this category",
+    "description": "Inbox Assistant: tooltip of the pin button",
+    "placeholders": {
+      "email": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_pinned": {
+    "message": "Emails from $EMAIL$ will always be sorted as \"$CATEGORY$\".",
+    "description": "Inbox Assistant: message after creating a sender rule",
+    "placeholders": {
+      "email": {
+        "content": "$1"
+      },
+      "category": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_draft_reply": {
+    "message": "Draft a reply with AI",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_no_subject": {
+    "message": "(no subject)",
+    "description": "Inbox Assistant: placeholder for empty subjects"
+  },
+  "inbox_due": {
+    "message": "Deadline mentioned in the email",
+    "description": "Inbox Assistant: tooltip of the deadline badge"
+  },
+  "inbox_badge_reply": {
+    "message": "needs reply",
+    "description": "Inbox Assistant: badge"
+  },
+  "inbox_badge_list": {
+    "message": "newsletter",
+    "description": "Inbox Assistant: badge for mailing list / newsletter senders"
+  },
+  "inbox_badge_rule": {
+    "message": "rule",
+    "description": "Inbox Assistant: badge: categorized by a sender rule"
+  },
+  "inbox_badge_rule_info": {
+    "message": "Categorized by one of your sender rules, without AI.",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_badge_unclassified": {
+    "message": "not classified",
+    "description": "Inbox Assistant: badge when the AI did not classify the email"
+  },
+  "inbox_priority_1": {
+    "message": "High priority",
+    "description": "Inbox Assistant: priority tooltip"
+  },
+  "inbox_priority_2": {
+    "message": "Normal priority",
+    "description": "Inbox Assistant: priority tooltip"
+  },
+  "inbox_priority_3": {
+    "message": "Low priority",
+    "description": "Inbox Assistant: priority tooltip"
+  },
+  "inbox_selected": {
+    "message": "$COUNT$ selected",
+    "description": "Inbox Assistant: bulk bar counter",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_set_category": {
+    "message": "Set category…",
+    "description": "Inbox Assistant: bulk bar select"
+  },
+  "inbox_clear_selection": {
+    "message": "Clear selection",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_act_read": {
+    "message": "Mark read",
+    "description": "Inbox Assistant: action"
+  },
+  "inbox_act_unread": {
+    "message": "Mark unread",
+    "description": "Inbox Assistant: action"
+  },
+  "inbox_act_flag": {
+    "message": "Flag",
+    "description": "Inbox Assistant: action (star)"
+  },
+  "inbox_act_unflag": {
+    "message": "Remove flag",
+    "description": "Inbox Assistant: action"
+  },
+  "inbox_act_archive": {
+    "message": "Archive",
+    "description": "Inbox Assistant: action"
+  },
+  "inbox_act_move": {
+    "message": "Move",
+    "description": "Inbox Assistant: action"
+  },
+  "inbox_act_tag": {
+    "message": "Tag",
+    "description": "Inbox Assistant: action"
+  },
+  "inbox_act_trash": {
+    "message": "Trash",
+    "description": "Inbox Assistant: action: move to trash"
+  },
+  "inbox_act_junk": {
+    "message": "Junk",
+    "description": "Inbox Assistant: action: mark as junk and move to junk folder"
+  },
+  "inbox_move_none": {
+    "message": "Leave in place",
+    "description": "Inbox Assistant: category move option"
+  },
+  "inbox_move_archive": {
+    "message": "Archive",
+    "description": "Inbox Assistant: category move option"
+  },
+  "inbox_move_folder": {
+    "message": "Move to folder",
+    "description": "Inbox Assistant: category move option"
+  },
+  "inbox_move_trash": {
+    "message": "Move to Trash",
+    "description": "Inbox Assistant: category move option"
+  },
+  "inbox_move_junk": {
+    "message": "Mark as junk",
+    "description": "Inbox Assistant: category move option"
+  },
+  "inbox_confirm_title": {
+    "message": "Apply these actions?",
+    "description": "Inbox Assistant: confirm dialog title"
+  },
+  "inbox_confirm_all_title": {
+    "message": "Apply suggested actions",
+    "description": "Inbox Assistant: confirm dialog title"
+  },
+  "inbox_confirm_all_intro": {
+    "message": "Untick what you want to skip.",
+    "description": "Inbox Assistant: confirm dialog text"
+  },
+  "inbox_confirm_skipped": {
+    "message": "$COUNT$ protected or flagged emails will be skipped.",
+    "description": "Inbox Assistant: confirm dialog text",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_confirm_note": {
+    "message": "Everything is recorded in Activity & undo, so you can revert it.",
+    "description": "Inbox Assistant: confirm dialog note"
+  },
+  "inbox_confirm_destructive": {
+    "message": "$ACTION$: $COUNT$ emails. Continue?",
+    "description": "Inbox Assistant: confirm before trash/junk",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "action": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_cancel": {
+    "message": "Cancel",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_apply": {
+    "message": "Apply",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_nothing_to_apply": {
+    "message": "There is nothing to apply: no category with a suggested action has emails.",
+    "description": "Inbox Assistant: message"
+  },
+  "inbox_apply_result": {
+    "message": "Done: $COUNT$ emails updated",
+    "description": "Inbox Assistant: message",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_apply_result_failed": {
+    "message": "$DONE$ emails updated, $FAILED$ failed",
+    "description": "Inbox Assistant: message",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "failed": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_permission_denied": {
+    "message": "Thunderbird did not grant the permission needed for this action.",
+    "description": "Inbox Assistant: message"
+  },
+  "inbox_permission_denied_auto": {
+    "message": "Without the requested permissions automatic actions cannot run. Settings were saved anyway.",
+    "description": "Inbox Assistant: message"
+  },
+  "inbox_undo": {
+    "message": "Undo",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_undo_done": {
+    "message": "$COUNT$ emails restored.",
+    "description": "Inbox Assistant: message",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_undo_missing": {
+    "message": "$COUNT$ emails could not be found any more.",
+    "description": "Inbox Assistant: message",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_pick_folder_title": {
+    "message": "Move to folder",
+    "description": "Inbox Assistant: dialog title"
+  },
+  "inbox_pick_folder_or_name": {
+    "message": "or folder name:",
+    "description": "Inbox Assistant: label of the folder name field"
+  },
+  "inbox_pick_folder_name_info": {
+    "message": "With a name, each email goes to the folder with that name in its own account. The folder is created when missing.",
+    "description": "Inbox Assistant: note"
+  },
+  "inbox_move_here": {
+    "message": "Move",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_pick_tag_title": {
+    "message": "Add tag",
+    "description": "Inbox Assistant: dialog title"
+  },
+  "inbox_pick_tag_new": {
+    "message": "or new tag:",
+    "description": "Inbox Assistant: label"
+  },
+  "inbox_reply_title": {
+    "message": "Draft a reply",
+    "description": "Inbox Assistant: dialog title"
+  },
+  "inbox_followup_title": {
+    "message": "Draft a follow-up",
+    "description": "Inbox Assistant: dialog title"
+  },
+  "inbox_reply_intent": {
+    "message": "What should the reply say? (optional)",
+    "description": "Inbox Assistant: label"
+  },
+  "inbox_reply_intent_placeholder": {
+    "message": "e.g. Accept, propose Tuesday at 10, ask for the invoice…",
+    "description": "Inbox Assistant: placeholder"
+  },
+  "inbox_followup_default_intent": {
+    "message": "Politely follow up on my previous email and ask for an answer.",
+    "description": "Inbox Assistant: default intent for follow-ups"
+  },
+  "inbox_reply_generate": {
+    "message": "Write with AI",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_reply_generating": {
+    "message": "Writing…",
+    "description": "Inbox Assistant: status"
+  },
+  "inbox_reply_open": {
+    "message": "Open in reply window",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_draft": {
+    "message": "Draft",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_done": {
+    "message": "Done",
+    "description": "Inbox Assistant: button marking an item as handled"
+  },
+  "inbox_done_info": {
+    "message": "Mark as handled (read, flag removed)",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_btn_scan_senders": {
+    "message": "Find who fills my inbox",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_sender_filter": {
+    "message": "Filter senders…",
+    "description": "Inbox Assistant: placeholder"
+  },
+  "inbox_senders_lists_only": {
+    "message": "Newsletters only",
+    "description": "Inbox Assistant: checkbox"
+  },
+  "inbox_senders_info": {
+    "message": "$EMAILS$ emails from $SENDERS$ senders",
+    "description": "Inbox Assistant: info text",
+    "placeholders": {
+      "emails": {
+        "content": "$1"
+      },
+      "senders": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_senders_empty": {
+    "message": "Click \"Find who fills my inbox\" to group your mail by sender. No AI needed.",
+    "description": "Inbox Assistant: empty state"
+  },
+  "inbox_senders_none_match": {
+    "message": "No sender matches the filter.",
+    "description": "Inbox Assistant: empty state"
+  },
+  "inbox_senders_selected": {
+    "message": "$SENDERS$ senders selected ($EMAILS$ emails)",
+    "description": "Inbox Assistant: bulk bar",
+    "placeholders": {
+      "senders": {
+        "content": "$1"
+      },
+      "emails": {
+        "content": "$2"
+      }
+    }
+  },
+  "inbox_col_sender": {
+    "message": "Sender",
+    "description": "Inbox Assistant: column"
+  },
+  "inbox_col_emails": {
+    "message": "Emails",
+    "description": "Inbox Assistant: column"
+  },
+  "inbox_col_unread": {
+    "message": "Unread",
+    "description": "Inbox Assistant: column"
+  },
+  "inbox_col_newest": {
+    "message": "Latest",
+    "description": "Inbox Assistant: column"
+  },
+  "inbox_col_actions": {
+    "message": "Actions",
+    "description": "Inbox Assistant: column"
+  },
+  "inbox_sender_rule": {
+    "message": "Always…",
+    "description": "Inbox Assistant: select: create a sender rule"
+  },
+  "inbox_sender_rule_info": {
+    "message": "Always put this sender in a category, without asking the AI",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_unsubscribe": {
+    "message": "Unsubscribe",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_qw_never_read": {
+    "message": "senders you almost never open ($COUNT$ emails)",
+    "description": "Inbox Assistant: quick win card text",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_qw_never_read_label": {
+    "message": "Senders you never read",
+    "description": "Inbox Assistant: activity label"
+  },
+  "inbox_qw_old_read": {
+    "message": "read emails older than 3 months",
+    "description": "Inbox Assistant: quick win card text"
+  },
+  "inbox_qw_old_read_label": {
+    "message": "Old read emails",
+    "description": "Inbox Assistant: activity label"
+  },
+  "inbox_qw_lists": {
+    "message": "newsletter senders ($COUNT$ emails older than 2 weeks)",
+    "description": "Inbox Assistant: quick win card text",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_qw_lists_label": {
+    "message": "Old newsletters",
+    "description": "Inbox Assistant: activity label"
+  },
+  "inbox_qw_big": {
+    "message": "in $COUNT$ emails larger than 5 MB",
+    "description": "Inbox Assistant: quick win card text",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_qw_big_review": {
+    "message": "Sort them with AI",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_qw_review": {
+    "message": "Review",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_qw_archive": {
+    "message": "Archive $COUNT$",
+    "description": "Inbox Assistant: button",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_unsub_title": {
+    "message": "Unsubscribe",
+    "description": "Inbox Assistant: dialog title"
+  },
+  "inbox_unsub_method_oneclick": {
+    "message": "One-click unsubscribe: ThunderAI sends the unsubscribe request for you.",
+    "description": "Inbox Assistant: method description"
+  },
+  "inbox_unsub_method_web": {
+    "message": "The sender's unsubscribe page opens in your browser.",
+    "description": "Inbox Assistant: method description"
+  },
+  "inbox_unsub_method_mail": {
+    "message": "An unsubscribe email is prepared: check it and click Send.",
+    "description": "Inbox Assistant: method description"
+  },
+  "inbox_unsub_also_archive": {
+    "message": "Also archive the $COUNT$ emails from this sender",
+    "description": "Inbox Assistant: checkbox",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_unsub_note": {
+    "message": "Unsubscribe links come from the List-Unsubscribe header the sender included. Only use it for senders you recognize.",
+    "description": "Inbox Assistant: note"
+  },
+  "inbox_unsub_confirm": {
+    "message": "Unsubscribe",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_unsub_done": {
+    "message": "Unsubscribed from $EMAIL$.",
+    "description": "Inbox Assistant: message",
+    "placeholders": {
+      "email": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_unsub_opened_web": {
+    "message": "The unsubscribe page was opened in your browser.",
+    "description": "Inbox Assistant: message"
+  },
+  "inbox_unsub_opened_mail": {
+    "message": "An unsubscribe email was prepared. Please review and send it.",
+    "description": "Inbox Assistant: message"
+  },
+  "inbox_needs_reply_title": {
+    "message": "Waiting for your reply",
+    "description": "Inbox Assistant: section title"
+  },
+  "inbox_needs_reply_info": {
+    "message": "From the last sort.",
+    "description": "Inbox Assistant: section info"
+  },
+  "inbox_needs_reply_none": {
+    "message": "Nothing is waiting for your reply.",
+    "description": "Inbox Assistant: empty state"
+  },
+  "inbox_needs_reply_scan_first": {
+    "message": "Run \"Sort with AI\" first to find emails that need a reply.",
+    "description": "Inbox Assistant: empty state"
+  },
+  "inbox_waiting_title": {
+    "message": "Waiting for an answer",
+    "description": "Inbox Assistant: section title"
+  },
+  "inbox_waiting_info": {
+    "message": "Emails you sent that nobody answered yet.",
+    "description": "Inbox Assistant: section info"
+  },
+  "inbox_followup_days": {
+    "message": "Sent in the last (days)",
+    "description": "Inbox Assistant: label"
+  },
+  "inbox_btn_scan_followups": {
+    "message": "Check sent mail",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_waiting_none": {
+    "message": "No unanswered sent emails found.",
+    "description": "Inbox Assistant: empty state"
+  },
+  "inbox_waiting_days": {
+    "message": "sent $DAYS$ days ago",
+    "description": "Inbox Assistant: age text",
+    "placeholders": {
+      "days": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_activity_info": {
+    "message": "Every action of the Inbox Assistant is listed here and can be undone.",
+    "description": "Inbox Assistant: info"
+  },
+  "inbox_refresh": {
+    "message": "Refresh",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_activity_clear": {
+    "message": "Clear log",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_activity_clear_confirm": {
+    "message": "Clear the activity log? Undo will no longer be possible for these entries.",
+    "description": "Inbox Assistant: confirm"
+  },
+  "inbox_activity_empty": {
+    "message": "No activity yet.",
+    "description": "Inbox Assistant: empty state"
+  },
+  "inbox_activity_source_auto": {
+    "message": "automatic",
+    "description": "Inbox Assistant: badge"
+  },
+  "inbox_activity_source_manual": {
+    "message": "manual",
+    "description": "Inbox Assistant: badge"
+  },
+  "inbox_activity_count": {
+    "message": "$COUNT$ emails",
+    "description": "Inbox Assistant: count",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_activity_failed": {
+    "message": "$COUNT$ failed",
+    "description": "Inbox Assistant: badge",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_activity_undone": {
+    "message": "undone",
+    "description": "Inbox Assistant: badge"
+  },
+  "inbox_activity_auto_label": {
+    "message": "Auto-sort",
+    "description": "Inbox Assistant: activity label prefix for automatic actions"
+  },
+  "inbox_activity_missing_permissions": {
+    "message": "Auto-sort could not act: missing permissions. Open the Inbox Assistant settings and save the categories again.",
+    "description": "Inbox Assistant: activity entry"
+  },
+  "inbox_cat_reply": {
+    "message": "Needs reply",
+    "description": "Inbox Assistant: built-in category name"
+  },
+  "inbox_cat_reply_desc": {
+    "message": "A real person wrote to the user personally and is waiting for an answer: questions, requests, invitations that need a response.",
+    "description": "Inbox Assistant: built-in category description sent to the AI (keep it in plain words)"
+  },
+  "inbox_cat_action": {
+    "message": "To do",
+    "description": "Inbox Assistant: built-in category name"
+  },
+  "inbox_cat_action_desc": {
+    "message": "Asks the user to do something other than replying: pay, sign, approve, book, confirm, fill in a form, or anything with a deadline.",
+    "description": "Inbox Assistant: built-in category description sent to the AI (keep it in plain words)"
+  },
+  "inbox_cat_important": {
+    "message": "Important",
+    "description": "Inbox Assistant: built-in category name"
+  },
+  "inbox_cat_important_desc": {
+    "message": "Relevant information from people, work, school, bank, authorities or services the user relies on, but no reply or action needed.",
+    "description": "Inbox Assistant: built-in category description sent to the AI (keep it in plain words)"
+  },
+  "inbox_cat_receipt": {
+    "message": "Receipts & orders",
+    "description": "Inbox Assistant: built-in category name"
+  },
+  "inbox_cat_receipt_desc": {
+    "message": "Receipts, invoices, order and shipping confirmations, bookings, tickets, account statements.",
+    "description": "Inbox Assistant: built-in category description sent to the AI (keep it in plain words)"
+  },
+  "inbox_cat_newsletter": {
+    "message": "Newsletters",
+    "description": "Inbox Assistant: built-in category name"
+  },
+  "inbox_cat_newsletter_desc": {
+    "message": "Newsletters, digests, blogs, community and mailing list emails the user subscribed to.",
+    "description": "Inbox Assistant: built-in category description sent to the AI (keep it in plain words)"
+  },
+  "inbox_cat_promotion": {
+    "message": "Promotions",
+    "description": "Inbox Assistant: built-in category name"
+  },
+  "inbox_cat_promotion_desc": {
+    "message": "Marketing, sales, offers, discounts, product announcements and advertising.",
+    "description": "Inbox Assistant: built-in category description sent to the AI (keep it in plain words)"
+  },
+  "inbox_cat_notification": {
+    "message": "Notifications",
+    "description": "Inbox Assistant: built-in category name"
+  },
+  "inbox_cat_notification_desc": {
+    "message": "Automated notifications: social networks, app and system alerts, calendar, login codes, password resets, comments, reminders.",
+    "description": "Inbox Assistant: built-in category description sent to the AI (keep it in plain words)"
+  },
+  "inbox_cat_spam": {
+    "message": "Spam",
+    "description": "Inbox Assistant: built-in category name"
+  },
+  "inbox_cat_spam_desc": {
+    "message": "Obvious unsolicited junk, scams or phishing. Only when clearly malicious or unwanted.",
+    "description": "Inbox Assistant: built-in category description sent to the AI (keep it in plain words)"
+  },
+  "inbox_cat_other": {
+    "message": "Other",
+    "description": "Inbox Assistant: built-in category name"
+  },
+  "inbox_cat_other_desc": {
+    "message": "Anything that does not fit the other categories.",
+    "description": "Inbox Assistant: built-in category description sent to the AI (keep it in plain words)"
+  },
+  "inbox_settings_title": {
+    "message": "Inbox Assistant settings",
+    "description": "Inbox Assistant: settings page title"
+  },
+  "inbox_settings_subtitle": {
+    "message": "Decide how the AI sorts your mail and what may happen automatically.",
+    "description": "Inbox Assistant: settings subtitle"
+  },
+  "inbox_settings_ai_title": {
+    "message": "AI connection",
+    "description": "Inbox Assistant: section"
+  },
+  "inbox_settings_ai_info": {
+    "message": "By default the Inbox Assistant uses the API chosen in the ThunderAI options. You can use a different one here, e.g. a fast and inexpensive Mistral AI model for sorting large inboxes.",
+    "description": "Inbox Assistant: section info"
+  },
+  "inbox_settings_specific_info": {
+    "message": "Use a specific API for the Inbox Assistant",
+    "description": "Inbox Assistant: checkbox"
+  },
+  "inbox_settings_about_title": {
+    "message": "About you",
+    "description": "Inbox Assistant: section"
+  },
+  "inbox_settings_about_placeholder": {
+    "message": "e.g. I am a freelance designer. Emails from clients and invoices are important. My kids' school writes from @school.example.",
+    "description": "Inbox Assistant: placeholder"
+  },
+  "inbox_settings_about_info": {
+    "message": "Optional. Added to every sorting request so the AI understands what matters to you. Do not write passwords or secrets here.",
+    "description": "Inbox Assistant: note"
+  },
+  "inbox_settings_categories_title": {
+    "message": "Categories and actions",
+    "description": "Inbox Assistant: section"
+  },
+  "inbox_settings_categories_info": {
+    "message": "Describe each category in plain words: the AI uses the description to decide. Add your own categories (e.g. \"Kids' school\" or \"Client projects\") and choose what \"Apply\" does. Tick \"Auto\" to let auto-sort apply the action to new mail.",
+    "description": "Inbox Assistant: section info"
+  },
+  "inbox_cat_col_on": {
+    "message": "On",
+    "description": "Inbox Assistant: column: category enabled"
+  },
+  "inbox_cat_col_name": {
+    "message": "Name",
+    "description": "Inbox Assistant: column"
+  },
+  "inbox_cat_col_description": {
+    "message": "Description for the AI",
+    "description": "Inbox Assistant: column"
+  },
+  "inbox_cat_col_action": {
+    "message": "Action",
+    "description": "Inbox Assistant: column"
+  },
+  "inbox_cat_col_auto": {
+    "message": "Auto",
+    "description": "Inbox Assistant: column"
+  },
+  "inbox_cat_col_auto_info": {
+    "message": "Apply the action automatically to new mail when auto-sort is enabled",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_cat_add": {
+    "message": "Add category",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_cat_save": {
+    "message": "Save categories",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_cat_delete": {
+    "message": "Delete category",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_cat_delete_confirm": {
+    "message": "Delete the category \"$NAME$\"?",
+    "description": "Inbox Assistant: confirm",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_cat_name_placeholder": {
+    "message": "Category name",
+    "description": "Inbox Assistant: placeholder"
+  },
+  "inbox_cat_desc_placeholder": {
+    "message": "Which emails belong here? e.g. Emails from my kids' school or teachers",
+    "description": "Inbox Assistant: placeholder"
+  },
+  "inbox_cat_folder_choose": {
+    "message": "Choose a folder…",
+    "description": "Inbox Assistant: select option"
+  },
+  "inbox_cat_folder_by_name": {
+    "message": "Folder with this name in each account…",
+    "description": "Inbox Assistant: select option"
+  },
+  "inbox_cat_folder_name_placeholder": {
+    "message": "Folder name, e.g. Receipts",
+    "description": "Inbox Assistant: placeholder"
+  },
+  "inbox_cat_no_tag": {
+    "message": "No tag",
+    "description": "Inbox Assistant: select option"
+  },
+  "inbox_cat_other_required": {
+    "message": "\"Other\" is always active: it collects what fits nowhere else.",
+    "description": "Inbox Assistant: tooltip"
+  },
+  "inbox_cat_error_name": {
+    "message": "Every custom category needs a name.",
+    "description": "Inbox Assistant: validation error"
+  },
+  "inbox_cat_error_desc": {
+    "message": "The category \"$NAME$\" needs a description so the AI knows which emails belong to it.",
+    "description": "Inbox Assistant: validation error",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_cat_error_folder": {
+    "message": "Choose a folder for the category \"$NAME$\".",
+    "description": "Inbox Assistant: validation error",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_unsaved": {
+    "message": "Unsaved changes",
+    "description": "Inbox Assistant: status"
+  },
+  "inbox_save": {
+    "message": "Save",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_saved": {
+    "message": "Saved.",
+    "description": "Inbox Assistant: message"
+  },
+  "inbox_settings_auto_title": {
+    "message": "Automatic sorting",
+    "description": "Inbox Assistant: section"
+  },
+  "inbox_settings_auto_sort": {
+    "message": "Sort new mail automatically",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_auto_sort_info": {
+    "message": "New mail is classified when it arrives. Only categories with \"Auto\" ticked apply their action. Protected senders, contacts and flagged mail are never touched.",
+    "description": "Inbox Assistant: setting info"
+  },
+  "inbox_settings_auto_sort_enable": {
+    "message": "Enable auto-sort",
+    "description": "Inbox Assistant: checkbox"
+  },
+  "inbox_settings_auto_summary": {
+    "message": "Automatic actions for: $CATEGORIES$",
+    "description": "Inbox Assistant: summary",
+    "placeholders": {
+      "categories": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_settings_auto_summary_none": {
+    "message": "No category has \"Auto\" ticked: new mail is only classified (the badge still shows what needs attention).",
+    "description": "Inbox Assistant: summary"
+  },
+  "inbox_settings_auto_accounts": {
+    "message": "Accounts",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_auto_accounts_info": {
+    "message": "None selected = all accounts",
+    "description": "Inbox Assistant: setting info"
+  },
+  "inbox_settings_auto_only_inbox": {
+    "message": "Only the inbox",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_auto_only_inbox_info": {
+    "message": "Ignore mail arriving in other folders (e.g. moved there by filters)",
+    "description": "Inbox Assistant: checkbox"
+  },
+  "inbox_settings_badge": {
+    "message": "Toolbar badge",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_badge_info": {
+    "message": "Show the number of new emails that need a reply or action on the toolbar button",
+    "description": "Inbox Assistant: checkbox"
+  },
+  "inbox_settings_safety_title": {
+    "message": "Safety",
+    "description": "Inbox Assistant: section"
+  },
+  "inbox_settings_protected": {
+    "message": "Protected senders",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_protected_info": {
+    "message": "One address or @domain per line. Their mail is never moved by suggested or automatic actions.",
+    "description": "Inbox Assistant: setting info"
+  },
+  "inbox_settings_protect_contacts": {
+    "message": "Protect my contacts",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_protect_contacts_info": {
+    "message": "Senders in your address books are treated as protected",
+    "description": "Inbox Assistant: checkbox"
+  },
+  "inbox_settings_skip_flagged": {
+    "message": "Protect flagged mail",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_skip_flagged_info": {
+    "message": "Flagged emails are never moved automatically",
+    "description": "Inbox Assistant: checkbox"
+  },
+  "inbox_settings_rules_title": {
+    "message": "Sender rules",
+    "description": "Inbox Assistant: section"
+  },
+  "inbox_settings_rules_info": {
+    "message": "Mail from these senders always gets the chosen category, without asking the AI. Create rules here or with the pin button in the Inbox Assistant.",
+    "description": "Inbox Assistant: section info"
+  },
+  "inbox_settings_rules_none": {
+    "message": "No sender rules yet.",
+    "description": "Inbox Assistant: empty state"
+  },
+  "inbox_settings_rule_placeholder": {
+    "message": "name@example.com or @example.com",
+    "description": "Inbox Assistant: placeholder"
+  },
+  "inbox_settings_rule_add": {
+    "message": "Add rule",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_settings_rule_invalid": {
+    "message": "Enter an email address or a domain starting with @.",
+    "description": "Inbox Assistant: validation error"
+  },
+  "inbox_settings_rule_missing": {
+    "message": "deleted category",
+    "description": "Inbox Assistant: shown when a rule points to a deleted category"
+  },
+  "inbox_settings_privacy_title": {
+    "message": "Privacy and performance",
+    "description": "Inbox Assistant: section"
+  },
+  "inbox_settings_read_content": {
+    "message": "Read email content",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_read_content_info": {
+    "message": "When off, only sender, subject and date are sent to the AI: more private and faster, but less accurate.",
+    "description": "Inbox Assistant: setting info"
+  },
+  "inbox_settings_read_content_enable": {
+    "message": "Send a short, cleaned excerpt of each email to the AI",
+    "description": "Inbox Assistant: checkbox"
+  },
+  "inbox_settings_snippet": {
+    "message": "Excerpt length",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_snippet_info": {
+    "message": "Maximum characters per email (quoted history and long links are removed first)",
+    "description": "Inbox Assistant: setting info"
+  },
+  "inbox_settings_batch": {
+    "message": "Emails per request",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_batch_info": {
+    "message": "More emails per request is cheaper and faster; fewer is more accurate with small models",
+    "description": "Inbox Assistant: setting info"
+  },
+  "inbox_settings_parallel": {
+    "message": "Parallel requests",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_parallel_info": {
+    "message": "Lower it if your API plan has strict rate limits (rate limit errors are retried automatically)",
+    "description": "Inbox Assistant: setting info"
+  },
+  "inbox_settings_cache": {
+    "message": "Saved classifications",
+    "description": "Inbox Assistant: setting"
+  },
+  "inbox_settings_cache_info": {
+    "message": "Results are stored locally so the same email is not sent twice",
+    "description": "Inbox Assistant: setting info"
+  },
+  "inbox_settings_cache_clear": {
+    "message": "Clear",
+    "description": "Inbox Assistant: button"
+  },
+  "inbox_settings_cache_confirm": {
+    "message": "Forget all saved classifications?",
+    "description": "Inbox Assistant: confirm"
+  },
+  "inbox_settings_cache_count": {
+    "message": "$COUNT$ emails saved",
+    "description": "Inbox Assistant: info",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "inbox_settings_prompt_title": {
+    "message": "Sorting instructions",
+    "description": "Inbox Assistant: section"
+  },
+  "inbox_settings_prompt_info": {
+    "message": "The main instructions sent to the AI. Categories, output format and the emails are added automatically.",
+    "description": "Inbox Assistant: section info"
+  },
+  "prompt_inbox_triage": {
+    "message": "Inbox Assistant: sorting",
+    "description": "Name of the hidden special prompt used by the Inbox Assistant"
+  },
+  "prompt_inbox_triage_full_text": {
+    "message": "You are an expert email assistant who helps the user keep a clean, well organized inbox. Classify each email below into exactly one of the given categories, using the category descriptions. Prefer the most specific category, and prefer the user's own custom categories when they match. An email only \"needs reply\" when a real person is personally waiting for an answer from the user; automated, bulk and marketing emails never need a reply. Mark as high priority only what is time sensitive or clearly important for the user. Be careful with spam: use it only for obvious junk, scams or phishing.",
+    "description": "Default instructions of the Inbox Assistant sorting prompt"
+  },
+  "prompt_inbox_brief_full_text": {
+    "message": "You are the user's email assistant. Using the list of emails below, write a short briefing of what needs the user's attention. Use these sections when they apply: Reply needed, To do (with deadlines), Important information. Keep each point to one line, start with the most urgent, reference emails as [n] and finish with one line about what can be safely ignored.",
+    "description": "Instructions of the Inbox Assistant brief prompt"
+  },
+  "prompt_inbox_reply_full_text": {
+    "message": "Write a reply to the email below on behalf of the user. Be clear, friendly and concise, answer every question that was asked, and do not invent facts: if information is missing, leave a short placeholder in square brackets. Output only the body of the reply, without subject line and without quoting the original email.",
+    "description": "Instructions of the Inbox Assistant reply prompt"
+  },
+  "prompt_inbox_followup_full_text": {
+    "message": "The user sent the emails below and did not receive an answer yet. For each email decide if it expects an answer (a question, a request, a proposal, a pending decision). Thank-you notes, confirmations, FYI messages and automatic replies do not expect an answer. Give a one-line summary of what the user is waiting for.",
+    "description": "Instructions of the Inbox Assistant follow-up prompt"
+  },
+  "prefs_OptionText_mistral_agent": {
+    "message": "Mistral Studio agent (optional)",
+    "description": "Label of the Mistral agent selector"
+  },
+  "prefs_OptionText_mistral_agent_none": {
+    "message": "None: use the model above",
+    "description": "First option of the Mistral agent selector"
+  },
+  "prefs_OptionText_mistral_agent_version": {
+    "message": "Version or alias:",
+    "description": "Label of the Mistral agent version field"
+  },
+  "prefs_OptionText_mistral_agent_version_placeholder": {
+    "message": "latest",
+    "description": "Placeholder of the Mistral agent version field: empty means the latest version"
+  },
+  "prefs_OptionText_mistral_agent_Info": {
+    "message": "Use an agent you built and deployed in Mistral Studio, with its own instructions and tools (web search, document library, code interpreter). Requests then go through the Mistral Conversations API with store disabled, so Mistral does not keep the conversation. The agent's model and instructions replace the model, temperature and system prompt set here. Leave the version empty for the latest one, or enter a version number or an alias such as \"production\".",
+    "description": "Hint below the Mistral agent selector"
+  },
+  "Mistral_Agents_Fetch": {
+    "message": "Load my agents",
+    "description": "Button that downloads the list of the user's Mistral Studio agents"
+  },
+  "Mistral_Agents_Error_fetching": {
+    "message": "Error trying to fetch your Mistral agents",
+    "description": "Error shown when the agent list cannot be downloaded"
+  },
+  "Mistral_Agents_None": {
+    "message": "No agents found in your Mistral workspace. Create one in Mistral Studio first.",
+    "description": "Message when the user has no Mistral agents"
+  },
+  "mistral_sources": {
+    "message": "Sources",
+    "description": "Title of the list of sources returned by a Mistral agent tool, shown in the reasoning block of the chat"
+  },
+  "mistral_agent_tool": {
+    "message": "Agent tool",
+    "description": "Prefix of the line shown when a Mistral agent uses a tool (e.g. web_search)"
+  },
+  "inbox_provider_agent": {
+    "message": "agent $AGENT$",
+    "description": "Inbox Assistant: provider badge detail when a Mistral agent is used",
+    "placeholders": {
+      "agent": {
+        "content": "$1"
+      }
+    }
   }
 }
