@@ -601,7 +601,7 @@ export async function injectConnectionUI({
         </select>
       </label>
       <label>
-        __MSG_prefs_OptionText_mistral_agent_version__
+        __MSG_prefs_OptionText_mistral_agent_version__:
         <input type="text" id="${modelId_prefix || ''}mistral_agent_version" name="${modelId_prefix || ''}mistral_agent_version" class="option-input" list="${modelId_prefix || ''}mistral_agent_aliases" placeholder="__MSG_prefs_OptionText_mistral_agent_version_placeholder__" />
         <datalist id="${modelId_prefix || ''}mistral_agent_aliases"></datalist>
       </label>

@@ -391,7 +391,8 @@ async function restoreOptions() {
               element.add(newOption);
             }
             element.value = restoreValue;
-            if (element.value === '') {
+            // Keep an explicit empty option (e.g. "model default") selected.
+            if (element.value === '' && !Array.from(element.options).some(o => o.value === '')) {
               element.selectedIndex = -1;
             }
           }

@@ -57,7 +57,13 @@ function h(tag, props = {}, ...children) {
     for (const [k, v] of Object.entries(props || {})) {
         if (v === null || v === undefined || v === false) continue;
         if (k === 'class') el.className = v;
-        else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+        else if (k === 'style' && typeof v === 'object') {
+            // CSS custom properties (e.g. --cat-color) need setProperty().
+            for (const [prop, val] of Object.entries(v)) {
+                if (prop.startsWith('--')) el.style.setProperty(prop, val);
+                else el.style[prop] = val;
+            }
+        }
         else if (k === 'dataset') Object.assign(el.dataset, v);
         else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
         else if (typeof v === 'boolean' || k === 'value') el[k] = v;
@@ -162,7 +168,7 @@ async function restoreOptions() {
                     } else {
                         if (!exists && restoreValue !== '') element.add(new Option(restoreValue, restoreValue));
                         element.value = restoreValue;
-                        if (element.value === '') element.selectedIndex = -1;
+                        if (element.value === '' && !Array.from(element.options).some(o => o.value === '')) element.selectedIndex = -1;
                     }
                 }
         }

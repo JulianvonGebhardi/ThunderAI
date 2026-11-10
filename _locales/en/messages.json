@@ -3862,7 +3862,7 @@
     "description": "First option of the Mistral agent selector"
   },
   "prefs_OptionText_mistral_agent_version": {
-    "message": "Version or alias:",
+    "message": "Version or alias",
     "description": "Label of the Mistral agent version field"
   },
   "prefs_OptionText_mistral_agent_version_placeholder": {

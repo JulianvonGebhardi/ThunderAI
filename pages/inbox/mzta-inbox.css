@@ -81,6 +81,10 @@ a { color: var(--ia-accent); }
 .ia-field > label, .ia-field-label { font-size: 12px; font-weight: 600; color: var(--ia-muted); text-transform: uppercase; letter-spacing: .03em; }
 .ia-field.grow { flex: 1 1 320px; }
 .ia-inline { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+/* The shared connection UI injects ".option-input { flex-grow: 1 }": keep checkboxes at their size. */
+.ia-inline > input[type="checkbox"], .ia-inline > input[type="checkbox"].option-input { flex: none; }
+.ia-field > label.ia-inline { text-transform: none; letter-spacing: normal; font-weight: normal; font-size: 13px; color: var(--ia-text); }
+.ia-settings-table label.ia-inline { justify-content: flex-start; }
 
 select, input[type="number"], input[type="text"], input[type="search"], textarea {
     font: inherit;

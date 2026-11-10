@@ -1296,7 +1296,6 @@ async function reload_pref_init(){
         ...getDynamicSettingsDefaults(['use_specific_integration', 'connection_type'])
     });
     _process_incoming = prefs_init.add_tags_auto || prefs_init.spamfilter || (prefs_init.summarize && prefs_init.summarize_auto === 3) || (prefs_init.translate && prefs_init.translate_auto === 3) || prefs_init.inbox_auto_sort;
-    if (typeof inboxAutoSort !== 'undefined') inboxAutoSort.setDebug(prefs_init.do_debug);
     _sparks_presence = await checkSparksPresence();
 }
 
@@ -1470,7 +1469,9 @@ function setupStorageChangeListener() {
                 updateInboxBadge();
             }
 
-            reload_pref_init();
+            // inboxAutoSort is created after the first reload_pref_init() call at startup,
+            // so its debug flag is updated here and not inside reload_pref_init().
+            reload_pref_init().then(() => inboxAutoSort.setDebug(prefs_init.do_debug));
         }
     });
 }

@@ -105,7 +105,8 @@ async function restoreOptions() {
           if(element.id == 'reply_type') default_select_value = 'reply_all';
           if(element.id == 'connection_type') default_select_value = 'chatgpt_web';
           element.value = result[element.id] || default_select_value;
-          if (element.value === '') {
+          // Keep an explicit empty option (e.g. "model default") selected.
+          if (element.value === '' && !Array.from(element.options).some(o => o.value === '')) {
             element.selectedIndex = -1;
           }
           if (element.tomselect) {
