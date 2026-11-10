@@ -12,6 +12,7 @@ The active AI provider is controlled by the `connection_type` preference. Possib
 | `openai_comp_api` | OpenAI-compatible API |
 | `google_gemini_api` | Google Gemini API |
 | `anthropic_api` | Claude (Anthropic) API |
+| `mistral_api` | Mistral AI API (native, incl. Mistral Studio agents) |
 
 The global default is `chatgpt_web`. Each special prompt (`add_tags`, `spamfilter`, etc.) can independently override this via its own `{prefix}_connection_type` pref.
 
@@ -52,12 +53,24 @@ Content script `js/lib/diff.js` is injected into ChatGPT pages for diff-view sup
 - Settings keys: `anthropic_api_key`, `anthropic_model`, `anthropic_version`, `anthropic_max_tokens`, `anthropic_system_prompt`, `anthropic_temperature`, `anthropic_extended_thinking_budget`
 - **Extended thinking**: when `anthropic_extended_thinking_budget > 0`, the request body adds `thinking: { type: 'enabled', budget_tokens: N }` and **omits** `temperature` (the Claude API forbids setting temperature with extended thinking). Thinking output arrives in the SSE stream as `content_block_delta` events with `delta.type === 'thinking_delta'` and is forwarded to the webchat UI as `newThinkingToken` messages, captured into a `thinkingAccumulator` in the worker and passed on `tokensDone`.
 
+### Mistral AI (`mistral_api`)
+- Module: `js/api/mistral.js`
+- Worker: `js/workers/model-worker-mistral.js`
+- Settings keys: `mistral_api_key`, `mistral_model` (default `mistral-medium-latest`), `mistral_temperature`, `mistral_max_tokens` (0 = model default), `mistral_system_prompt`, `mistral_reasoning_effort` (`''` = not sent, `none`/`low`/`medium`/`high`), `mistral_safe_prompt`, `mistral_agent_id`, `mistral_agent_version`
+- Host permission: `https://*.mistral.ai/*` (requested when fetching models/agents, in the onboarding page and from the popup banner)
+- Wire format verified against the official `@mistralai/mistralai` SDK (v3.5.0, November 2026).
+- **Chat Completions** (default): `POST https://api.mistral.ai/v1/chat/completions` with `stream: true`; the system prompt is prepended as a `system` message; `response_format: { type: 'json_object' }` when the caller sets `json_mode`. Streaming deltas have `choices[0].delta.content` as a string or an array of chunks (`{type:'text'}`, `{type:'thinking', thinking:[{type:'text'}]}`); thinking is forwarded as `newThinkingToken`.
+- **Models**: `GET /v1/models`, filtered to `capabilities.completion_chat`, deprecated models dropped, `-latest` aliases first, reasoning models marked.
+- **Mistral Studio agents**: when `mistral_agent_id` is set the worker uses the **Conversations API** `POST /v1/conversations` with `agent_id`, optional `agent_version` (number or alias such as `production`), `store: false` and the full history as `inputs` entries (`message.input` / `message.output`), so Mistral keeps no conversation. JSON mode is requested with `completion_args.response_format`. The agent's own model, instructions and tools are used (model, temperature and system prompt settings are ignored). Stream events: `conversation.response.started`, `message.output.delta` (text, `tool_reference` sources, thinking), `tool.execution.started/done`, `conversation.response.error`, `conversation.response.done`. Tool use and sources are sent as thinking tokens, never as answer text. Agents are listed with `GET /v1/agents`, aliases with `GET /v1/agents/{id}/aliases`.
+- Rate limits and transient errors (429, 5xx) are retried up to 3 times (`Retry-After` honored, otherwise exponential backoff).
+- `mzta_specialCommand` accepts `json_mode` (passed to the worker in the `chatMessage` event; other workers ignore it) and has `terminate()`.
+
 ## Thinking output in the webchat UI
 
 Two provider categories emit reasoning/thinking content:
 
 - **Ollama / OpenAI Compatible**: thinking arrives inline in the normal token stream wrapped in `<think>…</think>` tags. `MessagesArea.flushAccumulatingMessage()` strips these blocks from the rendered text and renders them as a `<details class="thinking-block">` prepended to the answer. If an unterminated `<think>` is detected mid-stream, the flush is deferred until the closing tag arrives.
-- **Anthropic**: thinking is captured in the worker and posted to the controller as `newThinkingToken`. `MessagesArea` accumulates it and renders the same `<details>` block on final flush.
+- **Anthropic** and **Mistral AI**: thinking is captured in the worker and posted to the controller as `newThinkingToken` (for Mistral agents also tool use and sources). `MessagesArea` accumulates it and renders the same `<details>` block on final flush.
 
 The global `hide_thinking` pref (default `true`) controls the **initial open/collapsed state** of the thinking block: `true` → collapsed, `false` → open. The user can always toggle by clicking. Thinking content is never discarded. Other providers (Google Gemini, OpenAI Responses, ChatGPT Web) are not affected by this UI logic.
 
@@ -72,6 +85,7 @@ For special prompts (`mzta_specialCommand`), required fields are validated in `i
 | `ollama_api` | `ollama_host`, `ollama_model` |
 | `openai_comp_api` | `openai_comp_host`, `openai_comp_model` |
 | `anthropic_api` | `anthropic_api_key`, `anthropic_model`, `anthropic_version` |
+| `mistral_api` | `mistral_api_key`, and `mistral_model` unless `mistral_agent_id` is set |
 
 Validation is skipped when `use_specific_api = true` (i.e., the prompt's own `api_type` overrides the global setting — credentials come from the prompt config, not global prefs).
 
@@ -82,7 +96,7 @@ Feature-specific routing of `isConfigError`:
 - `summarize` / `translate` / `spamfilter`: the error is shown in their dedicated panel (summary / translation / spam panel) and **not** persisted to storage.
 - `add_tags`: it has **no dedicated panel**, so the error is routed to the **generic error panel** via `showGenericError(errMsg, source)` in `mzta-background.js`, which broadcasts a `showGenericError` message to all tabs. The content script `js/mzta-compose-script.js` renders it as `#mzta-generic-error` inside `#mzta-container`. The panel is dismissible and reusable by any future feature without its own UI.
 
-For regular prompts (`openChatGPT()`), validation still happens inside the listener callback after the API webchat window is created (unchanged behavior).
+For regular prompts (`openChatGPT()`), all API integrations share `openAPIWebchat()` in `mzta-background.js`: it opens `api_webchat/index.html?llm=<connection_type>&call_id=_<integration>_<id>`, waits for `<connection_type>_ready_<call_id>`, validates the configuration with the same `validateAPIConfig()` used by special commands (taking the prompt specific API settings into account when the prompt overrides the API) and sends `api_send`, or `api_error` with the validation message.
 
 ## Web Worker Pattern
 
@@ -105,6 +119,7 @@ API calls require host permissions. These are declared as `optional_permissions`
 
 - `https://*.chatgpt.com/*` and `https://*.openai.com/*` for ChatGPT
 - `https://*.anthropic.com/*` for Claude
+- `https://*.mistral.ai/*` for Mistral AI
 - `https://*/*` and `http://*/*` for Ollama and OpenAI-compatible endpoints
 
 ## Adding a New Provider

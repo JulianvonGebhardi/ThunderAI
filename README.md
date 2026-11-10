@@ -1,6 +1,6 @@
 # ![ThunderAI icon](images/icon-32px.png "ThunderAI") ThunderAI
 
-ThunderAI is a Thunderbird Addon that uses the capabilities of ChatGPT, Google Gemini, Claude or Ollama to enhance email management.
+ThunderAI is a Thunderbird Addon that uses the capabilities of ChatGPT, Google Gemini, Claude, Mistral AI or Ollama to enhance email management.
 
 It enables users to analyse, write, correct, assign tags, create calendar events or tasks and optimize their emails, facilitating more effective and professional communication.
 
@@ -13,6 +13,17 @@ In any custom prompt you can use additional **[data placeholders](https://micz.i
 Using an API integration, you can activate some automatic features:
 - Tagging incoming emails
 - Moving spam emails to the junk folder
+- Sorting new mail automatically with the **Inbox Assistant**
+
+## Inbox Assistant
+
+Let the AI run your whole inbox, across all your accounts (toolbar button **Inbox Assistant**):
+- **Sort**: every email gets a category (Needs reply, To do, Important, Receipts, Newsletters, Promotions, Notifications, Spam, or your own categories described in plain words), a priority, a one-line summary and the deadline it mentions. Apply the suggested action per category (archive, move to a folder, tag, flag, mark read, junk, trash) after a preview.
+- **Clean up**: see who fills your inbox, unsubscribe in one click (RFC 8058) and archive old newsletters and old mail in bulk. No AI needed.
+- **Replies & follow-ups**: emails waiting for your answer, and sent emails nobody answered, with AI drafted replies and follow-ups.
+- **Inbox brief**: a short AI briefing of what needs your attention.
+- **Auto-sort**: optionally classify new mail when it arrives and apply the actions of the categories you choose.
+- **Safe by design**: nothing is moved without your confirmation (unless you enable auto-sort per category), protected senders, contacts and flagged mail are never moved, every action is logged and can be undone, and only a short cleaned excerpt (or just the headers) is sent to the AI.
 
 <br>
 
@@ -41,6 +52,13 @@ Using an API integration, you can activate some automatic features:
 >
 >
 > <br>
+>
+> - **Mistral AI API**
+>   - Native integration with your Mistral AI API key: model list, streaming, JSON mode, reasoning effort and automatic retries on rate limits.
+>   - You can also use an **agent built in Mistral Studio** (with its own instructions, web search or document library): requests then use the Mistral Conversations API with storage disabled.
+>
+>
+> <br>
 > 
 > - **Using Ollama**
 >   - Just remember to add `OLLAMA_ORIGINS = moz-extension://*` to the Ollama server environment variables.
@@ -59,6 +77,17 @@ Using an API integration, you can activate some automatic features:
 >     - Perplexity API
 
 
+
+<br>
+
+## Install from source
+
+1. Download or clone this repository, or use a packaged `.xpi` file.
+2. To build the `.xpi`, zip the content of the repository root (the folder that contains `manifest.json`), for example:
+   `zip -r -FS ../thunderai.xpi * -x '.git/*' '.github/*' 'claude-spec/*' 'dist/*'`
+3. In Thunderbird open *Tools → Add-ons and Themes*, click the gear icon and choose *Install Add-on From File…*, then select the `.xpi`.
+   For a quick test without installing, use *Tools → Developer Tools → Debug Add-ons → Load Temporary Add-on…* and select `manifest.json` (it is removed when Thunderbird restarts).
+4. Open the ThunderAI options, choose **Mistral AI API** as connection type, paste your API key from [console.mistral.ai](https://console.mistral.ai) and grant the requested permission.
 
 <br>
 

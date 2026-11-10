@@ -3,6 +3,15 @@
 
 
 
+<h2>Version 4.2.0 - 10/11/2026</h2>
+      <ul>
+        <li><i>[Mistral AI API]</i> New native Mistral AI integration: model list, streaming, JSON mode, reasoning effort, safe prompt and automatic retries on rate limits.</li>
+        <li><i>[Mistral AI API]</i> Mistral Studio agents can be used (agent, version or alias), through the Conversations API with storage disabled. Agent tool use and sources are shown in the reasoning block.</li>
+        <li>New Inbox Assistant: sorts the mail of multiple accounts and folders into categories with priority, summary and deadlines, with your own categories described in plain words and sender rules.</li>
+        <li>Inbox Assistant: cleanup by sender with one-click unsubscribe and bulk archive, inbox brief, replies and follow-ups with AI drafts.</li>
+        <li>Inbox Assistant: optional automatic sorting of new mail, protected senders and contacts, activity log with undo, toolbar button with a badge for mail needing attention.</li>
+        <li>Fix: correct relative import path in the prompts module.</li>
+      </ul>
 <h2>Version 4.1.0 - 13/05/2026</h2>
       <ul>
         <li>Antispam information are now permanently saved for each message [<a href="https://github.com/micz/ThunderAI/issues/675">#675</a>].</li>

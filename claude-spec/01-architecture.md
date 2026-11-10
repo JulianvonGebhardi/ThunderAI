@@ -33,6 +33,7 @@ js/mzta-prompts.js       (builds final prompt string)
  │  ollama_api    → Web Worker (ollama)   │
  │  google_gemini → Web Worker (gemini)   │
  │  anthropic     → Web Worker (anthropic)│
+ │  mistral       → Web Worker (mistral)  │
  │  openai_comp   → Web Worker (comp)     │
  └─────────────────────────────────────────┘
        ↓
@@ -173,6 +174,29 @@ taTranslationStore.saveTranslation()
 | `js/mzta-working-status.js` | Visual status indicator during AI processing |
 | `js/mzta-addtags-exclusion-list.js` | Tag exclusion list management |
 | `js/mzta-placeholders-autocomplete.js` | Autocomplete for placeholders in prompt editor |
+| `js/mzta-inbox-engine.js` | Inbox Assistant: scanning, digests, AI triage, prompts, sender stats, follow-ups (see `07-inbox-assistant.md`) |
+| `js/mzta-inbox-actions.js` | Inbox Assistant: action plans, protection, activity log and undo |
+| `js/mzta-inbox-auto.js` | Inbox Assistant: background auto-sort queue, toolbar badge, opening the dashboard |
+
+### Data Flow: Inbox Assistant auto-sort on email receive
+
+```
+New email arrives
+       ↓
+newEmailListener  (_process_incoming includes inbox_auto_sort)
+       ↓  messages collected once
+processEmails(...)          (add tags, spam filter, summary/translation on receive, when enabled)
+       ↓
+inboxAutoSort.enqueue()     (inbox folders, enabled accounts, < 3 days old)
+       ↓  5 s debounce, max 100 per run
+triageMessages()            (sender rules → cache → AI batches)
+       ↓
+executePlan()               (only categories with auto = true, protected senders/contacts/flagged skipped)
+       ↓
+activity log + toolbar badge (mail needing a reply or action)
+```
+
+The dashboard (`pages/inbox/`) uses the same engine directly from the page. See `claude-spec/07-inbox-assistant.md`.
 
 ## API Modules (`js/api/`)
 
@@ -185,6 +209,7 @@ Each file handles HTTP communication for one provider:
 | `ollama.js` | Ollama (self-hosted) |
 | `openai_comp.js` | OpenAI-compatible APIs |
 | `openai_comp_configs.js` | Pre-configured providers (DeepSeek, Grok, Mistral, OpenRouter, Perplexity) |
+| `mistral.js` | Mistral AI API (Chat Completions, models, Mistral Studio agents via the Conversations API) |
 | `openai_responses.js` | OpenAI Responses API |
 
 ## Web Workers (`js/workers/`)
@@ -196,6 +221,7 @@ Each API provider has a dedicated Web Worker so API calls don't block the UI:
 - `model-worker-ollama.js`
 - `model-worker-openai_comp.js`
 - `model-worker-openai_responses.js`
+- `model-worker-mistral.js`
 
 Workers receive a message with the prompt and settings, make the API call, and post back the result.
 
@@ -215,6 +241,7 @@ Each subdirectory is a self-contained settings/UI page for a specific feature:
 | `summarize/` | Email summarization settings |
 | `translate/` | Email translation settings |
 | `onboarding/` | First-run welcome page |
+| `inbox/` | Inbox Assistant dashboard and its settings page |
 | `_lib/` | Shared libraries used by pages |
 
 ## Storage

@@ -59,6 +59,7 @@ Some prompts trigger additional Thunderbird actions beyond just sending text to 
 | `get_calendar_event` | Extract and create a calendar event |
 | `get_task` | Extract and create a task |
 | `translate` | Translate email content into a target language |
+| `prompt_inbox_triage` | Inbox Assistant sorting instructions (hidden, `show_in: "none"`; carries the Inbox Assistant specific integration, see `07-inbox-assistant.md`) |
 
 These special prompts can have their own dedicated API integration settings (configured in the Options page). The list of these special prompts is in `options/mzta-options-default.js` as `special_prompts_with_integration`.
 

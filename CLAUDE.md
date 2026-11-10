@@ -1,7 +1,7 @@
 # ThunderAI - Claude Code Guide
 
 ## Project Overview
-ThunderAI is a **Thunderbird WebExtension (Manifest V2)** that integrates multiple AI providers (ChatGPT Web, OpenAI API, Google Gemini, Claude/Anthropic, Ollama, and OpenAI-compatible APIs) directly into the Thunderbird email client.
+ThunderAI is a **Thunderbird WebExtension (Manifest V2)** that integrates multiple AI providers (ChatGPT Web, OpenAI API, Google Gemini, Claude/Anthropic, Mistral AI, Ollama, and OpenAI-compatible APIs) directly into the Thunderbird email client.
 
 - **Extension ID:** `thunderai@micz.it`
 - **Min Thunderbird:** 140.0+
@@ -42,6 +42,7 @@ ThunderAI is a **Thunderbird WebExtension (Manifest V2)** that integrates multip
 │   ├── get-task/
 │   ├── spamfilter/
 │   ├── summarize/
+│   ├── inbox/              # Inbox Assistant dashboard and settings
 │   └── onboarding/
 ├── popup/                  # Popup menu (shown on toolbar click)
 │   └── mzta-popup.html/.js/.css
@@ -62,4 +63,5 @@ For detailed documentation see [`claude-spec/`](claude-spec/):
 - [04-api-integrations.md](claude-spec/04-api-integrations.md) — AI provider integrations
 - [05-options.md](claude-spec/05-options.md) — Settings and preferences system
 - [06-localization.md](claude-spec/06-localization.md) — i18n rules and workflow
+- [07-inbox-assistant.md](claude-spec/07-inbox-assistant.md) — Inbox Assistant (AI triage, cleanup, follow-ups, auto-sort, undo)
 - [99-thunderbird-team-spec.md](claude-spec/99-thunderbird-team-spec.md) — Thunderbird WebExtensions development guidelines (API usage, experiments, review requirements)

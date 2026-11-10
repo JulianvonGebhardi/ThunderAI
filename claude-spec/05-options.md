@@ -25,6 +25,7 @@ ollama_host, ollama_model, ollama_num_ctx, ollama_temperature, ollama_think
 openai_comp_host, openai_comp_model, openai_comp_api_key, openai_comp_use_v1, openai_comp_chat_name, openai_comp_temperature
 google_gemini_api_key, google_gemini_model, google_gemini_system_instruction, google_gemini_thinking_budget, google_gemini_temperature
 anthropic_api_key, anthropic_model, anthropic_version, anthropic_max_tokens, anthropic_system_prompt, anthropic_temperature, anthropic_extended_thinking_budget
+mistral_api_key, mistral_model, mistral_temperature, mistral_max_tokens, mistral_system_prompt, mistral_reasoning_effort, mistral_safe_prompt, mistral_agent_id, mistral_agent_version
 ```
 
 Plus the global connection selector:
@@ -35,7 +36,7 @@ use_specific_integration   (default: false)
 
 ### Special Prompt Integration Overrides
 
-The 6 special prompts (`add_tags`, `spamfilter`, `summarize`, `get_calendar_event`, `get_task`, `translate`) each get their own `use_specific_integration` and `connection_type` keys:
+The 7 special prompt prefixes (`add_tags`, `spamfilter`, `summarize`, `get_calendar_event`, `get_task`, `translate`, `inbox`) each get their own `use_specific_integration` and `connection_type` keys:
 
 ```
 {prefix}_use_specific_integration   (default: false)
@@ -104,6 +105,23 @@ These are generated programmatically at the bottom of `mzta-options-default.js` 
 | `translate_auto` | `0` | Auto-translate mode: `0` = disabled, `1` = manual (show button), `2` = automatic (translate on message open), `3` = generate on email receive (background pre-cache via `onNewMailReceived`, no UI during generation) |
 | `translate_max_display_length` | `0` | Maximum characters shown in inline translation before truncation. `0` = no limit (show full text). When set, text is truncated at a word boundary and a "See more"/"See less" toggle link is shown. |
 | `translate_lang` | `''` | Target language for translation. Falls back to `default_chatgpt_lang` if empty. |
+| `inbox_auto_sort` | `false` | Inbox Assistant: classify new mail and apply the actions of categories marked "auto" |
+| `inbox_auto_accounts` | `[]` | Accounts enabled for auto-sort (empty = all) |
+| `inbox_auto_only_inbox` | `true` | Auto-sort only mail arriving in inbox folders |
+| `inbox_show_badge` | `true` | Toolbar badge with the number of new mails needing a reply or action |
+| `inbox_batch_size` | `15` | Emails per AI request (1-50) |
+| `inbox_snippet_length` | `600` | Max characters of each cleaned email excerpt sent to the AI (0-4000) |
+| `inbox_parallel_requests` | `2` | Concurrent AI requests (1-4) |
+| `inbox_read_content` | `true` | `false` = only sender, subject and date are sent to the AI |
+| `inbox_user_context` | `''` | Free text about the user added to the sorting prompt |
+| `inbox_protected_senders` | `[]` | Addresses or `@domains` never moved by suggested/automatic actions |
+| `inbox_protect_contacts` | `true` | Address book contacts are protected (needs `addressBooks`) |
+| `inbox_skip_flagged` | `true` | Flagged mail is protected |
+| `inbox_scan_accounts`, `inbox_scan_folder_mode`, `inbox_scan_days`, `inbox_scan_max`, `inbox_scan_unread_only`, `inbox_followup_days` | | Last scope used in the Inbox Assistant dashboard |
+
+Inbox Assistant data that is not a preference lives in `storage.local`: `_inbox_categories`, `_inbox_sender_rules`, `_inbox_triage_cache`, `_inbox_activity`, `_inbox_attention_count` (see `claude-spec/07-inbox-assistant.md`).
+
+Select restore in all settings pages keeps an explicit empty option selected (e.g. Mistral reasoning effort "model default" or agent "none"); the selection is cleared only when no `''` option exists.
 
 ### Summarize Settings Page (`pages/summarize/`)
 
@@ -126,6 +144,10 @@ The summarize settings page provides:
    - Email separator prompt (`prompt_summarize_email_separator`)
    - Each has Save/Reset buttons and placeholder autocomplete
    - Default text comes from i18n strings (`prompt_summarize_full_text`, etc.)
+
+### Inbox Assistant Settings Page (`pages/inbox/mzta-inbox-settings.html`)
+
+AI connection (specific integration with prefix `inbox`, prompt `prompt_inbox_triage`; when the global connection is ChatGPT Web the specific integration is forced and Mistral AI is preselected), about-you text, categories editor (name, AI description, move/folder/tag/mark read/flag, auto), auto-sort, safety (protected senders, contacts, flagged), sender rules, privacy/performance, sorting instructions. Saving categories with "auto" and enabling auto-sort request the needed permissions in the click handler, because the background cannot request them.
 
 ### Menu Order Page (`pages/menu_order/`)
 
