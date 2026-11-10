@@ -16,6 +16,12 @@
         "default_icon": "images/icon-32px.png",
         "default_popup": "popup/mzta-popup.html"
     },
+    "browser_action": {
+        "default_title": "__MSG_inbox_browser_action_title__",
+        "default_label": "__MSG_inbox_browser_action_label__",
+        "default_icon": "images/icon-32px.png",
+        "default_area": "maintoolbar"
+    },
     "compose_action": {
         "default_title": "__MSG_menu_title__",
         "default_icon": "images/icon-32px.png",
@@ -39,9 +45,11 @@
         "messagesTags",
         "messagesUpdate",
         "messagesMove",
+        "accountsFolders",
         "https://*.chatgpt.com/*",
         "https://*.openai.com/*",
         "https://*.anthropic.com/*",
+        "https://*.mistral.ai/*",
         "https://*/*",
         "http://*/*",
         "<all_urls>"

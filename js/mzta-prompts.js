@@ -399,6 +399,24 @@ const specialPrompts = [
         is_default: "1",
         is_special: "1",
         show_in: "context",
+    },
+    {
+        // Inbox Assistant triage instructions. Never shown in menus: it carries the editable
+        // instructions and the specific API integration of the Inbox Assistant.
+        id: 'prompt_inbox_triage',
+        name: "__MSG_prompt_inbox_triage__",
+        text: "prompt_inbox_triage_full_text",
+        type: "1",
+        action: "0",
+        need_selected: "0",
+        need_signature: "0",
+        need_custom_text: "0",
+        define_response_lang: "0",
+        use_diff_viewer: "0",
+        api_type: '',
+        is_default: "1",
+        is_special: "1",
+        show_in: "none",
     }
 ];
 

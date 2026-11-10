@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const special_prompts_with_integration = ['add_tags', 'spamfilter', 'summarize', 'get_calendar_event', 'get_task', 'translate'];
+export const special_prompts_with_integration = ['add_tags', 'spamfilter', 'summarize', 'get_calendar_event', 'get_task', 'translate', 'inbox'];
 
 export const integration_options_config = {
     chatgpt: {
@@ -57,6 +57,15 @@ export const integration_options_config = {
         system_prompt: '',
         temperature: '',
         extended_thinking_budget: 0
+    },
+    mistral: {
+        api_key: '',
+        model: 'mistral-medium-latest',
+        temperature: '',
+        max_tokens: 0,
+        system_prompt: '',
+        reasoning_effort: '',
+        safe_prompt: false
     }
 };
 
@@ -108,7 +117,7 @@ export const prefs_default = {
     default_sign_name: '',
     reply_type: 'reply_all',
     composing_plain_text: false,
-    connection_type: 'chatgpt_web',     //Other values: 'chatgpt_api', 'ollama_api', 'openai_comp_api', 'google_gemini_api'
+    connection_type: 'chatgpt_web',     //Other values: 'chatgpt_api', 'ollama_api', 'openai_comp_api', 'google_gemini_api', 'anthropic_api', 'mistral_api'
     chatgpt_web_model: '',
     chatgpt_web_tempchat: false,
     chatgpt_web_project: '',
@@ -152,5 +161,24 @@ export const prefs_default = {
     translate_max_display_length: 0,     // 0 = no limit, otherwise max chars shown inline
     translate_lang: '',                  // target language, fallback on default_chatgpt_lang
     translate_exclude_lang: '',          // languages to do not translate
+    // Inbox Assistant (see claude-spec/07-inbox-assistant.md)
+    inbox_auto_sort: false,              // classify new mail and apply the actions of the categories marked "auto"
+    inbox_auto_accounts: [],             // accounts enabled for auto-sort, empty = all accounts
+    inbox_auto_only_inbox: true,         // auto-sort only mail arriving in inbox folders
+    inbox_show_badge: true,              // show the "needs attention" counter on the toolbar button
+    inbox_batch_size: 15,                // emails per AI request
+    inbox_snippet_length: 600,           // max characters of each email body sent to the AI
+    inbox_parallel_requests: 2,          // concurrent AI requests
+    inbox_read_content: true,            // false = only headers (sender, subject, date) are sent to the AI
+    inbox_user_context: '',              // free text about the user, added to the triage prompt
+    inbox_protected_senders: [],         // addresses or @domains never touched by automatic/suggested actions
+    inbox_protect_contacts: true,        // senders in the address book are protected (needs addressBooks permission)
+    inbox_skip_flagged: true,            // flagged mail is protected
+    inbox_scan_accounts: [],             // last account selection in the Inbox Assistant page, empty = all
+    inbox_scan_folder_mode: 'inbox',     // 'inbox', 'inbox_sub', 'all', 'custom'
+    inbox_scan_days: 30,                 // 0 = no limit
+    inbox_scan_max: 200,
+    inbox_scan_unread_only: false,
+    inbox_followup_days: 14,
     ...generated_prefs
 }

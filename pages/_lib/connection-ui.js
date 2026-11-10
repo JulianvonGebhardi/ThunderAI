@@ -26,6 +26,7 @@ import { Ollama } from '../../js/api/ollama.js';
 import { OpenAIComp } from '../../js/api/openai_comp.js'
 import { GoogleGemini } from '../../js/api/google_gemini.js';
 import { Anthropic } from '../../js/api/anthropic.js';
+import { Mistral } from '../../js/api/mistral.js';
 import {
   validateCustomData_ChatGPTWeb,
   sanitizeChatGPTModelData,
@@ -558,6 +559,93 @@ export async function injectConnectionUI({
       </label>
     </td>
   </tr>
+  <tr class="conntype_mistral_api${tr_class ? ` ${tr_class}` : ''}">
+    <td><label>
+      <span class="opt_title">__MSG_prefs_Mistral_API_Key__</span>
+    </label></td>
+    <td>
+      <div class="api_key-container">
+        <label>
+          <input type="password" id="${modelId_prefix || ''}mistral_api_key" name="${modelId_prefix || ''}mistral_api_key" class="option-input"/>
+        </label>
+        <span class="toggle-icon" id="${modelId_prefix || ''}toggle_mistral_api_key"><img src="/images/pwd-show.png" id="${modelId_prefix || ''}pwd-icon_mistral_api_key"></span>
+      </div>
+      <i class="small_info">__MSG_prefs_Mistral_API_Key_Info__ <a href="https://console.mistral.ai/api-keys">console.mistral.ai</a></i>
+    </td>
+  </tr>
+  <tr class="conntype_mistral_api${tr_class ? ` ${tr_class}` : ''}">
+    <td>
+      <label>
+        <span class="opt_title">__MSG_Mistral_Models__</span>
+      </label>
+    </td>
+    <td>
+      <button id="${modelId_prefix || ''}btnUpdateMistralModels">__MSG_Mistral_Models_Fetch__</button> <span id="${modelId_prefix || ''}mistral_model_fetch_loading" class="mistral_model_fetch_loading" style="display:none">__MSG_Loading__</span><br>
+      <label>
+        <select id="${modelId_prefix || ''}mistral_model" name="${modelId_prefix || ''}mistral_model" class="option-input"></select>
+      </label>
+      <i class="small_info">__MSG_Mistral_Models_Info__</i>
+    </td>
+  </tr>
+  <tr class="conntype_mistral_api${tr_class ? ` ${tr_class}` : ''}">
+    <td>
+      <label>
+        <span class="opt_title">__MSG_prefs_api_temperature__</span>
+      </label>
+    </td>
+    <td>
+      <label>
+        <input type="text" id="${modelId_prefix || ''}mistral_temperature" name="${modelId_prefix || ''}mistral_temperature" class="option-input check-number" />
+        <br>__MSG_prefs_mistral_temperature_Info__
+      </label>
+    </td>
+  </tr>
+  <tr class="conntype_mistral_api${tr_class ? ` ${tr_class}` : ''}">
+    <td>
+      <label>
+        <span class="opt_title">__MSG_Mistral_System_Prompt__</span>
+      </label>
+    </td>
+    <td>
+      <label>
+        <textarea id="${modelId_prefix || ''}mistral_system_prompt" name="${modelId_prefix || ''}mistral_system_prompt" class="option-input option-textarea"></textarea>
+        <br>__MSG_Mistral_System_Prompt_Info__
+      </label>
+    </td>
+  </tr>
+  <tr class="conntype_mistral_api${tr_class ? ` ${tr_class}` : ''}">
+    <td><span class="opt_title">__MSG_prefs_OptionText_mistral_max_tokens__</span></td>
+    <td>
+      <label>
+        <input type="number" min="0" id="${modelId_prefix || ''}mistral_max_tokens" name="${modelId_prefix || ''}mistral_max_tokens" class="option-input" />
+        <br>__MSG_prefs_OptionText_mistral_max_tokens_Info__
+      </label>
+    </td>
+  </tr>
+  <tr class="conntype_mistral_api${tr_class ? ` ${tr_class}` : ''}">
+    <td><span class="opt_title">__MSG_prefs_OptionText_mistral_reasoning_effort__</span></td>
+    <td>
+      <label>
+        <select id="${modelId_prefix || ''}mistral_reasoning_effort" name="${modelId_prefix || ''}mistral_reasoning_effort" class="option-input">
+          <option value="">__MSG_prefs_OptionText_mistral_reasoning_effort_default__</option>
+          <option value="none">none</option>
+          <option value="low">low</option>
+          <option value="medium">medium</option>
+          <option value="high">high</option>
+        </select>
+        <br>__MSG_prefs_OptionText_mistral_reasoning_effort_Info__
+      </label>
+    </td>
+  </tr>
+  <tr class="conntype_mistral_api${tr_class ? ` ${tr_class}` : ''}">
+    <td><span class="opt_title">__MSG_prefs_OptionText_mistral_safe_prompt__</span></td>
+    <td>
+      <label>
+        <input type="checkbox" id="${modelId_prefix || ''}mistral_safe_prompt" name="${modelId_prefix || ''}mistral_safe_prompt" class="option-input" />
+        __MSG_prefs_OptionText_mistral_safe_prompt_Info__
+      </label>
+    </td>
+  </tr>
   `;
 
   const template = document.createElement('template');
@@ -596,6 +684,7 @@ export async function injectConnectionUI({
   conntype_select.addEventListener("change", () => warn_GoogleGemini_APIKeyEmpty(modelId_prefix));
   conntype_select.addEventListener("change", () => warn_Anthropic_APIKeyEmpty(modelId_prefix));
   conntype_select.addEventListener("change", () => warn_Anthropic_VersionEmpty(modelId_prefix));
+  conntype_select.addEventListener("change", () => warn_Mistral_APIKeyEmpty(modelId_prefix));
   document.getElementById("chatgpt_web_project").addEventListener("input", validateCustomData_ChatGPTWeb);
   document.getElementById("chatgpt_web_custom_gpt").addEventListener("input", validateCustomData_ChatGPTWeb);
   document.getElementById(getPrefixedId("chatgpt_api_key")).addEventListener("change", () => warn_ChatGPT_APIKeyEmpty(modelId_prefix));
@@ -604,18 +693,15 @@ export async function injectConnectionUI({
   document.getElementById(getPrefixedId("google_gemini_api_key")).addEventListener("change", () => warn_GoogleGemini_APIKeyEmpty(modelId_prefix));
   document.getElementById(getPrefixedId("anthropic_api_key")).addEventListener("change", () => warn_Anthropic_APIKeyEmpty(modelId_prefix));
   document.getElementById(getPrefixedId("anthropic_version")).addEventListener("change", () => warn_Anthropic_VersionEmpty(modelId_prefix));
+  document.getElementById(getPrefixedId("mistral_api_key")).addEventListener("change", () => warn_Mistral_APIKeyEmpty(modelId_prefix));
+  document.getElementById(getPrefixedId("mistral_api_key")).addEventListener("input", () => warn_Mistral_APIKeyEmpty(modelId_prefix));
   document.getElementById(getPrefixedId("openai_comp_host")).addEventListener("input", () => resetOpenAICompConfigs(modelId_prefix));
   document.getElementById(getPrefixedId("openai_comp_chat_name")).addEventListener("input", () => resetOpenAICompConfigs(modelId_prefix));
   document.getElementById(getPrefixedId("openai_comp_use_v1")).addEventListener("input", () => resetOpenAICompConfigs(modelId_prefix));
 
   showConnectionOptions(conntype_select);
   loadOpenAICompConfigs(modelId_prefix);
-  warn_ChatGPT_APIKeyEmpty(modelId_prefix);
-  warn_Ollama_HostEmpty(modelId_prefix);
-  warn_OpenAIComp_HostEmpty(modelId_prefix);
-  warn_GoogleGemini_APIKeyEmpty(modelId_prefix);
-  warn_Anthropic_APIKeyEmpty(modelId_prefix);
-  warn_Anthropic_VersionEmpty(modelId_prefix);
+  updateWarnings(modelId_prefix);
 
   const passwordField_chatgpt_api_key = document.getElementById(getPrefixedId('chatgpt_api_key'));
   const toggleIcon_chatgpt_api_key = document.getElementById(getPrefixedId('toggle_chatgpt_api_key'));
@@ -659,6 +745,17 @@ export async function injectConnectionUI({
       passwordField_anthropic_api_key.setAttribute('type', type);
 
       icon_img_anthropic_api_key.src = type === 'password' ? "/images/pwd-show.png" : "/images/pwd-hide.png";
+  });
+
+  const passwordField_mistral_api_key = document.getElementById(getPrefixedId('mistral_api_key'));
+  const toggleIcon_mistral_api_key = document.getElementById(getPrefixedId('toggle_mistral_api_key'));
+  const icon_img_mistral_api_key = document.getElementById(getPrefixedId('pwd-icon_mistral_api_key'));
+
+  toggleIcon_mistral_api_key.addEventListener('click', () => {
+      const type = passwordField_mistral_api_key.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordField_mistral_api_key.setAttribute('type', type);
+
+      icon_img_mistral_api_key.src = type === 'password' ? "/images/pwd-show.png" : "/images/pwd-hide.png";
   });
 
   const btnChatGPTWeb_Tab = document.getElementById('btnChatGPTWeb_Tab');
@@ -720,6 +817,7 @@ export async function injectConnectionUI({
     google_gemini_model: '',
     anthropic_model: '',
     anthropic_version: '',
+    mistral_model: prefs_default.mistral_model,
     chatgpt_win_height: 0,
     chatgpt_win_width: 0
   });
@@ -982,6 +1080,61 @@ export async function injectConnectionUI({
     warn_Anthropic_APIKeyEmpty(modelId_prefix);
   });
 
+  // Mistral AI API model fetching
+  let select_mistral_model = getModelEl('mistral_model', modelId_prefix);
+  if (prefs.mistral_model) {
+    const mistral_option = document.createElement('option');
+    mistral_option.value = prefs.mistral_model;
+    mistral_option.text = prefs.mistral_model;
+    select_mistral_model.appendChild(mistral_option);
+    select_mistral_model.value = prefs.mistral_model;
+  }
+  select_mistral_model.addEventListener("change", () => warn_Mistral_APIKeyEmpty(modelId_prefix));
+
+  document.getElementById(getPrefixedId('btnUpdateMistralModels')).addEventListener('click', async () => {
+    const loading_el = document.getElementById(getPrefixedId('mistral_model_fetch_loading'));
+    loading_el.style.display = 'inline';
+    // The permission request must be the first awaited call to keep the user gesture.
+    let granted = await messenger.permissions.request({ origins: ["https://*.mistral.ai/*"] });
+    if(!granted){
+        loading_el.style.display = 'none';
+        taLog.warn("Mistral API web permission denied");
+        alert(browser.i18n.getMessage("Optional_Permission_Denied_Model_Fetching"));
+        return;
+    }
+    let mistral = new Mistral({
+      apiKey: document.getElementById(getPrefixedId("mistral_api_key")).value,
+    });
+    let data = await mistral.fetchModels();
+    loading_el.style.display = 'none';
+    if(!data.ok){
+      let errorDetail;
+      try {
+        errorDetail = Mistral.parseErrorMessage(JSON.parse(data.error));
+      } catch (e) {
+        errorDetail = data.error;
+      }
+      console.error("[ThunderAI] " + browser.i18n.getMessage("Mistral_Models_Error_fetching"));
+      alert(browser.i18n.getMessage("Mistral_Models_Error_fetching") + ": " + errorDetail);
+      return;
+    }
+    taLog.log("Mistral models: " + JSON.stringify(data));
+    data.response.forEach(model => {
+      const label = model.id + (model.reasoning ? " \u{1F9E0}" : "") + (model.max_context_length ? " (" + Math.round(model.max_context_length / 1000) + "k)" : "");
+      const existingOption = Array.from(select_mistral_model.options).find(option => option.value === model.id);
+      if (existingOption) {
+        existingOption.text = label;
+      } else {
+        const option = document.createElement('option');
+        option.value = model.id;
+        option.text = label;
+        select_mistral_model.appendChild(option);
+      }
+    });
+    syncTomSelect(select_mistral_model);
+    warn_Mistral_APIKeyEmpty(modelId_prefix);
+  });
+
     document.getElementById(getPrefixedId('btnOpenAICompForceModel')).addEventListener('click', () => {
       let modelName = prompt(browser.i18n.getMessage('OpenAIComp_force_model_ask')).trim();
       if ((modelName !== null) && (modelName !== undefined) && (modelName !== '')) {
@@ -1037,12 +1190,7 @@ export async function injectConnectionUI({
     input.addEventListener('input', warn_InvalidNumber);
    });
   
-  warn_ChatGPT_APIKeyEmpty(modelId_prefix);
-  warn_Ollama_HostEmpty(modelId_prefix);
-  warn_OpenAIComp_HostEmpty(modelId_prefix);
-  warn_GoogleGemini_APIKeyEmpty(modelId_prefix);
-  warn_Anthropic_APIKeyEmpty(modelId_prefix);
-  warn_Anthropic_VersionEmpty(modelId_prefix);
+  updateWarnings(modelId_prefix);
 
   if (customButtonLabel && customButtonCallback) {
     const btn = document.getElementById(`${modelId_prefix}customButton`);
@@ -1056,7 +1204,7 @@ export async function injectConnectionUI({
 
   updateCORSWarnings(modelId_prefix);
 
-  ['chatgpt_model', 'google_gemini_model', 'ollama_model', 'openai_comp_model', 'anthropic_model'].forEach(id => {
+  ['chatgpt_model', 'google_gemini_model', 'ollama_model', 'openai_comp_model', 'anthropic_model', 'mistral_model'].forEach(id => {
     const el = document.getElementById(getPrefixedId(id));
     if (el && !el.tomselect) {
       let ts = new TomSelect(el, {
@@ -1200,6 +1348,7 @@ export function updateWarnings(modelId_prefix = '') {
   warn_GoogleGemini_APIKeyEmpty(modelId_prefix);
   warn_Anthropic_APIKeyEmpty(modelId_prefix);
   warn_Anthropic_VersionEmpty(modelId_prefix);
+  warn_Mistral_APIKeyEmpty(modelId_prefix);
 }
 
 export function changeConnTypeRowColor(conntype_row, conntype_select) {
@@ -1208,7 +1357,8 @@ export function changeConnTypeRowColor(conntype_row, conntype_select) {
   conntype_row.classList.toggle("conntype_ollama_api", (conntype_select.value === "ollama_api"));
   conntype_row.classList.toggle("conntype_openai_comp_api", (conntype_select.value === "openai_comp_api"));
   conntype_row.classList.toggle("conntype_google_gemini_api", (conntype_select.value === "google_gemini_api"));
-  conntype_row.classList.toggle("conntype_anthropic_api", (conntype_select.value === "anthropic_api"));  
+  conntype_row.classList.toggle("conntype_anthropic_api", (conntype_select.value === "anthropic_api"));
+  conntype_row.classList.toggle("conntype_mistral_api", (conntype_select.value === "mistral_api"));
 }
 
 export function showConnectionOptions(conntype_select, modelId_prefix = '') {
@@ -1268,6 +1418,9 @@ export function showConnectionOptions(conntype_select, modelId_prefix = '') {
   parent.parentElement.querySelectorAll(".conntype_anthropic_api").forEach(element => {
     element.style.display = anthropic_api_display;
   });
+  parent.parentElement.querySelectorAll(".conntype_mistral_api").forEach(element => {
+    element.style.display = (conntype_select.value === "mistral_api") ? 'table-row' : 'none';
+  });
   updateCORSWarnings(modelId_prefix);
 }
 
@@ -1307,6 +1460,7 @@ function populateConnectionTypeOptions(selectId, no_chatgpt_web = false) {
     { value: 'chatgpt_api',        msgKey: 'prefs_Connection_type_ChatGPT_API' },
     { value: 'google_gemini_api',  msgKey: 'prefs_Connection_type_Google_Gemini_API' },
     { value: 'anthropic_api',      msgKey: 'prefs_Connection_type_Anthropic_API' },
+    { value: 'mistral_api',        msgKey: 'prefs_Connection_type_Mistral_API' },
     { value: 'ollama_api',         msgKey: 'prefs_Connection_type_Ollama_API' },
     { value: 'openai_comp_api',    msgKey: 'prefs_Connection_type_OpenAI_Comp_API' }
   ];
@@ -1478,6 +1632,28 @@ function warn_Anthropic_VersionEmpty(modelId_prefix) {
       modelAnthropic.style.border = '2px solid red';
     }else{
       modelAnthropic.style.border = '';
+    }
+  }
+}
+
+function warn_Mistral_APIKeyEmpty(modelId_prefix) {
+  const getPrefixedId = (id) => `${modelId_prefix ? `${modelId_prefix}` : ''}${id}`;
+  let apiKeyInput = document.getElementById(getPrefixedId('mistral_api_key'));
+  let btnFetchMistralModels = document.getElementById(getPrefixedId('btnUpdateMistralModels'));
+  let modelMistral = getModelEl('mistral_model', modelId_prefix);
+  if (!apiKeyInput || !btnFetchMistralModels || !modelMistral) return;
+  if(apiKeyInput.value === ''){
+    apiKeyInput.style.border = '2px solid red';
+    btnFetchMistralModels.disabled = true;
+    modelMistral.style.border = '';
+  }else{
+    apiKeyInput.style.border = '';
+    btnFetchMistralModels.disabled = false;
+    toggleTomSelectDisabled(modelMistral, false);
+    if((modelMistral.selectedIndex === -1)||(modelMistral.value === '')){
+      modelMistral.style.border = '2px solid red';
+    }else{
+      modelMistral.style.border = '';
     }
   }
 }

@@ -70,6 +70,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
     }
+    if(prefs.connection_type === 'mistral_api'){
+        let permission_mistral = await messenger.permissions.contains({ origins: ["https://*.mistral.ai/*"] });
+        if(permission_mistral === false){
+            document.getElementById("mistral_api_permission").style.display = "block";
+            document.getElementById("mistral_api_permission").addEventListener("click", async () => {
+                let granted = await messenger.permissions.request({ origins: ["https://*.mistral.ai/*"] });
+                if(granted){
+                    document.getElementById("mistral_api_permission").style.display = "none";
+                    document.getElementById("integration_permission_ok").style.display = "block";
+                    taLog.log("Mistral API permission granted");
+                }else{
+                    taLog.log("Mistral API permission denied");
+                }
+            });
+            document.getElementById("integration_permission_ok").addEventListener("click", async () => {
+                await messenger.tabs.remove((await messenger.tabs.getCurrent()).id);
+            });
+        }
+    }
     if(prefs.connection_type === 'chatgpt_api'){
         let permission_openai = await messenger.permissions.contains({ origins: ["https://*.openai.com/*"] });
         if(permission_openai === false){

@@ -19,6 +19,7 @@
 import { mzta_script } from './js/mzta-chatgpt.js';
 import {
     prefs_default,
+    integration_options_config,
     getDynamicSettingsDefaults
 } from './options/mzta-options-default.js';
 import { mzta_Menus } from './js/mzta-menus.js';
@@ -51,7 +52,7 @@ import {
     hasSpecificIntegration,
      } from './js/mzta-utils.js';
 import { taPromptUtils } from './js/mzta-utils-prompt.js';
-import { mzta_specialCommand } from './js/mzta-special-commands.js';
+import { mzta_specialCommand, validateAPIConfig } from './js/mzta-special-commands.js';
 import {
     getSpamFilterPrompt,
     migrateMenuOrderAlphabetic
@@ -64,6 +65,12 @@ import {
     addTags_getExclusionList,
     checkExcludedTag
 } from './js/mzta-addtags-exclusion-list.js';
+import {
+    taInboxAutoSort,
+    openInboxAssistant,
+    updateInboxBadge,
+    resetInboxAttention
+} from './js/mzta-inbox-auto.js';
 
 browser.runtime.onInstalled.addListener(({ reason, previousVersion }) => {
     // console.log(">>>>>>>>>>> onInstalled: " + JSON.stringify(reason) + ", previousVersion: " + previousVersion);
@@ -93,6 +100,7 @@ taWorkingStatus.taLog = taLog;
 let spamReport = new taSpamReport(prefs_init.do_debug);
 let summaryStore = new taSummaryStore(prefs_init.do_debug);
 let translationStore = new taTranslationStore(prefs_init.do_debug);
+let inboxAutoSort = new taInboxAutoSort(prefs_init.do_debug);
 
 let special_prompts_ids = getActiveSpecialPromptsIDs({
     addtags: prefs_init.add_tags,
@@ -532,6 +540,10 @@ messenger.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 }
                 return _reloadBody(message.tabId);
                 break;
+            case 'inbox_open':
+                return openInboxAssistant(message.params || '');
+            case 'inbox_reset_attention':
+                return resetInboxAttention();
             case 'reload_menus':
                 return _reload_menus();
                 break;
@@ -1162,252 +1174,68 @@ async function openChatGPT(promptText, action, curr_tabId, prompt_name = '', do_
         break;  // chatgpt_web - END
 
         case 'chatgpt_api':
-        {
-         // We are using the ChatGPT API
-
-            let rand_call_id2 = '_openai_' + generateCallID();
-
-            const listener2 = (message, sender, sendResponse) => {
-
-                function handleChatGptApi(createdTab) {
-                    let mailMessageId2 = -1;
-                    if(mailMessage) mailMessageId2 = mailMessage.id;
-
-                    // check if the config is present, or give a message error
-                    if (prefs.chatgpt_api_key == '') {
-                        browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: browser.i18n.getMessage('chatgpt_empty_apikey')});
-                        return;
-                    }
-                    if (prefs.chatgpt_model == '') {
-                        browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: browser.i18n.getMessage('chatgpt_empty_model')});
-                        return;
-                    }
-                    //console.log(">>>>>>>>>> sender: " + JSON.stringify(sender));
-                    browser.tabs.sendMessage(createdTab.id, { command: "api_send", prompt: promptText, action: action, tabId: curr_tabId, mailMessageId: mailMessageId2, do_custom_text: do_custom_text, prompt_info: prompt_info});
-                    taLog.log('[OpenAI ChatGPT] Connection succeded!');
-                    browser.runtime.onMessage.removeListener(listener2);
-                }
-
-                if (message.command === "chatgpt_api_ready_"+rand_call_id2) {
-                    return handleChatGptApi(sender.tab);
-                }
-                return false;
-            }
-
-            browser.runtime.onMessage.addListener(listener2);
-
-            let win_options2 = {
-                url: browser.runtime.getURL('api_webchat/index.html?llm='+prefs.connection_type+'&call_id='+rand_call_id2+'&ph_def_val='+(prefs.placeholders_use_default_value?'1':'0')+'&prompt_id='+encodeURIComponent(prompt_info.id) + '&prompt_name=' + encodeURIComponent(i18nConditionalGet(prompt_info.name))),
-                type: "popup",
-            }
-
-            applyWindowPositionAndSize(win_options2, prefs);
-
-            await browser.windows.create(win_options2);
-        }
-        break;  // chatgpt_api - END
-
         case 'google_gemini_api':
-        {
-            // We are using the Google Gemini API
-
-            let rand_call_id5 = '_google_gemini_' + generateCallID();
-
-            const listener5 = (message, sender, sendResponse) => {
-
-                function handleChatGptApi(createdTab) {
-                    let mailMessageId5 = -1;
-                    if(mailMessage) mailMessageId5 = mailMessage.id;
-
-                    // check if the config is present, or give a message error
-                    if (prefs.google_gemini_api_key == '') {
-                        browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: browser.i18n.getMessage('google_gemini_empty_apikey')});
-                        return;
-                    }
-                    if (prefs.google_gemini_model == '') {
-                        browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: browser.i18n.getMessage('google_gemini_empty_model')});
-                        return;
-                    }
-                    //console.log(">>>>>>>>>> sender: " + JSON.stringify(sender));
-                    browser.tabs.sendMessage(createdTab.id, { command: "api_send", prompt: promptText, action: action, tabId: curr_tabId, mailMessageId: mailMessageId5, do_custom_text: do_custom_text, prompt_info: prompt_info});
-                    taLog.log('[Google Gemini] Connection succeded!');
-                    browser.runtime.onMessage.removeListener(listener5);
-                }
-
-                if (message.command === "google_gemini_api_ready_"+rand_call_id5) {
-                    return handleChatGptApi(sender.tab);
-                }
-                return false;
-            }
-
-            browser.runtime.onMessage.addListener(listener5);
-
-            let win_options5 = {
-                url: browser.runtime.getURL('api_webchat/index.html?llm='+prefs.connection_type+'&call_id='+rand_call_id5+'&ph_def_val='+(prefs.placeholders_use_default_value?'1':'0')+'&prompt_id='+encodeURIComponent(prompt_info.id) + '&prompt_name=' + encodeURIComponent(i18nConditionalGet(prompt_info.name))),
-                type: "popup",
-            }
-
-            applyWindowPositionAndSize(win_options5, prefs);
-
-            await browser.windows.create(win_options5);
-        }
-        break;  // google_gemini_api - END
-
         case 'ollama_api':
-        {
-             // We are using the Ollama API
-
-            taLog.log("Ollama API window opening...");
-
-            let rand_call_id3 = '_ollama_' + generateCallID();
-
-            const listener3 = (message, sender, sendResponse) => {
-
-                function handleOllamaApi(createdTab3) {
-                    taLog.log("Ollama API window ready.");
-                    taLog.log("message.window_id: " + message.window_id)
-                    taLog.log("createdTab3.id: " + createdTab3.id)
-                    // let mailMessage3 = await browser.messageDisplay.getDisplayedMessage(curr_tabId);
-                    let mailMessageId3 = -1;
-                    if(mailMessage) mailMessageId3 = mailMessage.id;
-                    taLog.log("mailMessageId3: " + mailMessageId3)
-            
-                    // check if the config is present, or give a message error
-                    if (prefs.ollama_host == '') {
-                        browser.tabs.sendMessage(createdTab3.id, { command: "api_error", error: browser.i18n.getMessage('ollama_empty_host')});
-                        return;
-                    }
-                    if (prefs.ollama_model == '') {
-                        browser.tabs.sendMessage(createdTab3.id, { command: "api_error", error: browser.i18n.getMessage('ollama_empty_model')});
-                        return;
-                    }
-                    browser.tabs.sendMessage(createdTab3.id, { command: "api_send", prompt: promptText, action: action, tabId: curr_tabId, mailMessageId: mailMessageId3, do_custom_text: do_custom_text, prompt_info: prompt_info});
-                    taLog.log('[Ollama API] Connection succeded!');
-                    browser.runtime.onMessage.removeListener(listener3);
-                }
-
-                if (message.command === "ollama_api_ready_"+rand_call_id3) {
-                    return handleOllamaApi(sender.tab);
-                }else{
-                    return false;
-                }
-            }
-
-            browser.runtime.onMessage.addListener(listener3);
-
-            let win_options3 = {
-                url: browser.runtime.getURL('api_webchat/index.html?llm='+prefs.connection_type+'&call_id='+rand_call_id3+'&ph_def_val='+(prefs.placeholders_use_default_value?'1':'0')+'&prompt_id='+encodeURIComponent(prompt_info.id) + '&prompt_name=' + encodeURIComponent(i18nConditionalGet(prompt_info.name))),
-                type: "popup",
-            }
-
-            applyWindowPositionAndSize(win_options3, prefs);
-
-            await browser.windows.create(win_options3);
-
-        }
-        break;  // ollama_api - END
-
         case 'openai_comp_api':
-        {
-            // We are using the OpenAI Comp API
-    
-            let rand_call_id4 = '_openai_comp_api_' + generateCallID();
-
-    
-            const listener4 = (message, sender, sendResponse) => {
-
-                function handleOpenAICompApi(createdTab) {
-                    let mailMessageId4 = -1;
-                    if(mailMessage) mailMessageId4 = mailMessage.id;
-    
-                    // check if the config is present, or give a message error
-                    if (prefs.openai_comp_host == '') {
-                        browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: browser.i18n.getMessage('OpenAIComp_empty_host')});
-                        return;
-                    }
-                    if (prefs.openai_comp_model == '') {
-                        browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: browser.i18n.getMessage('OpenAIComp_empty_model')});
-                        return;
-                    }
-    
-                    browser.tabs.sendMessage(createdTab.id, { command: "api_send", prompt: promptText, action: action, tabId: curr_tabId, mailMessageId: mailMessageId4, do_custom_text: do_custom_text, prompt_info: prompt_info});
-                    taLog.log('[OpenAI Comp API] Connection succeded!');
-                    browser.runtime.onMessage.removeListener(listener4);
-                }
-
-                if (message.command === "openai_comp_api_ready_"+rand_call_id4) {
-                    return handleOpenAICompApi(sender.tab);
-                }
-                return false;
-            }
-    
-            browser.runtime.onMessage.addListener(listener4);
-
-            let win_options4 = {
-                url: browser.runtime.getURL('api_webchat/index.html?llm='+prefs.connection_type+'&call_id='+rand_call_id4+'&ph_def_val='+(prefs.placeholders_use_default_value?'1':'0')+'&prompt_id='+encodeURIComponent(prompt_info.id) + '&prompt_name=' + encodeURIComponent(i18nConditionalGet(prompt_info.name))),
-                type: "popup",
-            }
-
-            applyWindowPositionAndSize(win_options4, prefs);
-
-            await browser.windows.create(win_options4);
-        }
-        break;  // openai_comp_api - END
-
         case 'anthropic_api':
+        case 'mistral_api':
         {
-            // We are using the Anthropic API
-
-            let rand_call_id6 = '_anthropic_' + generateCallID();
-
-            const listener6 = (message, sender, sendResponse) => {
-
-                function handleAnthropicApi(createdTab) {
-                    let mailMessageId6 = -1;
-                    if(mailMessage) mailMessageId6 = mailMessage.id;
-
-                    // check if the config is present, or give a message error
-                    if (prefs.anthropic_api_key == '') {
-                        browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: browser.i18n.getMessage('anthropic_empty_apikey')});
-                        return;
-                    }
-                    if (prefs.anthropic_model == '') {
-                        browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: browser.i18n.getMessage('anthropic_empty_model')});
-                        return;
-                    }
-                    if (prefs.anthropic_version == '') {
-                        browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: browser.i18n.getMessage('anthropic_empty_version')});
-                        return;
-                    }
-                    //console.log(">>>>>>>>>> sender: " + JSON.stringify(sender));
-                    browser.tabs.sendMessage(createdTab.id, { command: "api_send", prompt: promptText, action: action, tabId: curr_tabId, mailMessageId: mailMessageId6, do_custom_text: do_custom_text, prompt_info: prompt_info});
-                    taLog.log('[OpenAI ChatGPT] Connection succeded!');
-                    browser.runtime.onMessage.removeListener(listener6);
-                }
-
-                if (message.command === "anthropic_api_ready_"+rand_call_id6) {
-                    return handleAnthropicApi(sender.tab);
-                }
-                return false;
-            }
-
-            browser.runtime.onMessage.addListener(listener6);
-
-            let win_options6 = {
-                url: browser.runtime.getURL('api_webchat/index.html?llm='+prefs.connection_type+'&call_id='+rand_call_id6+'&ph_def_val='+(prefs.placeholders_use_default_value?'1':'0')+'&prompt_id='+encodeURIComponent(prompt_info.id) + '&prompt_name=' + encodeURIComponent(i18nConditionalGet(prompt_info.name))),
-                type: "popup",
-            }
-
-            applyWindowPositionAndSize(win_options6, prefs);
-
-            await browser.windows.create(win_options6);
+            // All API integrations share the same flow: open the API webchat window, wait for it
+            // to report ready, validate the configuration and then send the prompt.
+            await openAPIWebchat(prefs, promptText, action, curr_tabId, mailMessage, do_custom_text, prompt_info);
         }
-        break;  // anthropic_api - END
+        break;  // API integrations - END
 
         default:
             taLog.error("Unknown API connection type: " + prefs.connection_type);
         break;
     }
+}
+
+// Opens the API webchat window for any API based integration (everything except ChatGPT Web).
+async function openAPIWebchat(prefs, promptText, action, curr_tabId, mailMessage, do_custom_text, prompt_info) {
+    const connection_type = prefs.connection_type;
+    const integration = connection_type.replace('_api', '');
+    const call_id = '_' + integration + '_' + generateCallID();
+
+    // The webchat applies the prompt specific API settings when the prompt overrides the API,
+    // so the validation must look at the same effective values.
+    let effective_prefs = { ...prefs };
+    if (prompt_info && prompt_info.api_type === connection_type && integration_options_config[integration]) {
+        for (const key of Object.keys(integration_options_config[integration])) {
+            const prefKey = `${integration}_${key}`;
+            if (prompt_info[prefKey] !== undefined) {
+                effective_prefs[prefKey] = prompt_info[prefKey];
+            }
+        }
+    }
+
+    const listener = (message, sender, sendResponse) => {
+        if (message.command !== connection_type + "_ready_" + call_id) {
+            return false;
+        }
+        browser.runtime.onMessage.removeListener(listener);
+        const createdTab = sender.tab;
+        const configError = validateAPIConfig(connection_type, effective_prefs);
+        if (configError) {
+            browser.tabs.sendMessage(createdTab.id, { command: "api_error", error: configError });
+            return;
+        }
+        const mailMessageId = mailMessage ? mailMessage.id : -1;
+        browser.tabs.sendMessage(createdTab.id, { command: "api_send", prompt: promptText, action: action, tabId: curr_tabId, mailMessageId: mailMessageId, do_custom_text: do_custom_text, prompt_info: prompt_info });
+        taLog.log('[' + connection_type + '] Connection succeded!');
+    };
+
+    browser.runtime.onMessage.addListener(listener);
+
+    let win_options = {
+        url: browser.runtime.getURL('api_webchat/index.html?llm=' + connection_type + '&call_id=' + call_id + '&ph_def_val=' + (prefs.placeholders_use_default_value ? '1' : '0') + '&prompt_id=' + encodeURIComponent(prompt_info.id) + '&prompt_name=' + encodeURIComponent(i18nConditionalGet(prompt_info.name))),
+        type: "popup",
+    };
+
+    applyWindowPositionAndSize(win_options, prefs);
+
+    await browser.windows.create(win_options);
 }
 
 function checkScreenDimensions(prefs){
@@ -1462,9 +1290,13 @@ async function reload_pref_init(){
         spamfilter_show_msg_panel: prefs_default.spamfilter_show_msg_panel,
         dynamic_menu_force_enter: prefs_default.dynamic_menu_force_enter,
         chatgpt_win_save_position: prefs_default.chatgpt_win_save_position,
+        inbox_auto_sort: prefs_default.inbox_auto_sort,
+        inbox_auto_accounts: prefs_default.inbox_auto_accounts,
+        inbox_auto_only_inbox: prefs_default.inbox_auto_only_inbox,
         ...getDynamicSettingsDefaults(['use_specific_integration', 'connection_type'])
     });
-    _process_incoming = prefs_init.add_tags_auto || prefs_init.spamfilter || (prefs_init.summarize && prefs_init.summarize_auto === 3) || (prefs_init.translate && prefs_init.translate_auto === 3);
+    _process_incoming = prefs_init.add_tags_auto || prefs_init.spamfilter || (prefs_init.summarize && prefs_init.summarize_auto === 3) || (prefs_init.translate && prefs_init.translate_auto === 3) || prefs_init.inbox_auto_sort;
+    if (typeof inboxAutoSort !== 'undefined') inboxAutoSort.setDebug(prefs_init.do_debug);
     _sparks_presence = await checkSparksPresence();
 }
 
@@ -1634,6 +1466,10 @@ function setupStorageChangeListener() {
                 menus.reload(special_prompts_ids);
             }
 
+            if (changes.inbox_show_badge) {
+                updateInboxBadge();
+            }
+
             reload_pref_init();
         }
     });
@@ -1687,6 +1523,10 @@ browser.menus.onClicked.addListener((info, tab) => {
     }
     const promptId = menuItemId.replace('mzta-ctx-', '');
 
+    if (promptId.startsWith('inbox-')) {
+        handleInboxMenuClick(promptId, info);
+        return;
+    }
     if (specialContextMenuActions[promptId]) {
         specialContextMenuActions[promptId](getMessages(info.selectedMessages));
     } else {
@@ -1706,21 +1546,34 @@ const newEmailListener = (folder, messagesList) => {
     taLog.log(`Folder: ${folder.name}`);
 
     async function _newEmailListener(){
-        let messages = getMessages(messagesList);
+        // Collect the messages once: they are used by processEmails and by the Inbox Assistant.
+        let messages = [];
+        for await (let m of getMessages(messagesList)) {
+            messages.push(m);
+        }
 
         let add_tags_auto_enabled = prefs_init.add_tags && prefs_init.add_tags_auto;
+        let summarize_on_receive = prefs_init.summarize && prefs_init.summarize_auto === 3;
+        let translate_on_receive = prefs_init.translate && prefs_init.translate_auto === 3;
 
-        await processEmails({
-            messages: messages,
-            addTagsAuto: add_tags_auto_enabled,
-            spamFilter: prefs_init.spamfilter,
-            summarizeOnReceive: prefs_init.summarize && prefs_init.summarize_auto === 3,
-            translateOnReceive: prefs_init.translate && prefs_init.translate_auto === 3,
-            isAutoMode: true,
-        });
+        if (add_tags_auto_enabled || prefs_init.spamfilter || summarize_on_receive || translate_on_receive) {
+            await processEmails({
+                messages: messages,
+                addTagsAuto: add_tags_auto_enabled,
+                spamFilter: prefs_init.spamfilter,
+                summarizeOnReceive: summarize_on_receive,
+                translateOnReceive: translate_on_receive,
+                isAutoMode: true,
+            });
+        }
 
         if(prefs_init.spamfilter){
             spamReport.truncReportData();
+        }
+
+        // Inbox Assistant auto-sort runs after the other features (e.g. after the spam filter moved junk away).
+        if (prefs_init.inbox_auto_sort) {
+            await inboxAutoSort.enqueue(folder, messages, prefs_init);
         }
     }
 
@@ -1956,6 +1809,37 @@ async function processEmails(args) {
 }
 
 browser.messages.onNewMailReceived.addListener(newEmailListener, !prefs_init.add_tags_auto_only_inbox);
+
+// Inbox Assistant: toolbar button and context menus
+browser.browserAction.onClicked.addListener(() => {
+    openInboxAssistant();
+});
+
+async function handleInboxMenuClick(menuId, info) {
+    switch (menuId) {
+        case 'inbox-open':
+            await openInboxAssistant();
+            break;
+        case 'inbox-folder': {
+            const folders = info.selectedFolders || (info.selectedFolder ? [info.selectedFolder] : []);
+            const ids = folders.map(f => f.id).filter(Boolean);
+            await openInboxAssistant(ids.length > 0 ? 'folders=' + encodeURIComponent(ids.join(',')) : '');
+            break;
+        }
+        case 'inbox-selection': {
+            const ids = [];
+            for await (let m of getMessages(info.selectedMessages)) {
+                ids.push(m.id);
+                if (ids.length >= 1000) break;
+            }
+            await browser.storage.session.set({ _inbox_selection: ids });
+            await openInboxAssistant('selection=1');
+            break;
+        }
+    }
+}
+
+updateInboxBadge().catch(e => taLog.error("Inbox badge update failed: " + e));
 
 // Inject script and CSS in all already open message tabs.
 let openTabs = await messenger.tabs.query();

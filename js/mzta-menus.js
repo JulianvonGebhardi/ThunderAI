@@ -510,6 +510,8 @@ export class mzta_Menus {
 
     async loadContextMenus() {
         await browser.menus.removeAll();
+        // removeAll() also removes the Inbox Assistant menus: recreate them first.
+        await this.loadInboxMenus();
         const contextPrompts = this.allPrompts.filter(p => {
             const showIn = p.show_in || "popup";
             // Only show prompts that should appear in context menu and are for reading context (type 0 or 1)
@@ -558,6 +560,19 @@ export class mzta_Menus {
             );
         }
         this.logger.log("Context menus loaded: " + contextPrompts.length + " items");
+    }
+
+    async loadInboxMenus() {
+        const items = [
+            { id: 'mzta-ctx-inbox-folder', title: browser.i18n.getMessage('inbox_menu_folder'), contexts: ["folder_pane"] },
+            { id: 'mzta-ctx-inbox-selection', title: browser.i18n.getMessage('inbox_menu_selection'), contexts: ["message_list"] },
+            { id: 'mzta-ctx-inbox-open', title: browser.i18n.getMessage('inbox_menu_open'), contexts: ["tools_menu"] },
+        ];
+        for (const item of items) {
+            await new Promise(resolve =>
+                browser.menus.create({ ...item, icons: { 16: "images/icon-16px.png", 32: "images/icon-32px.png" } }, resolve)
+            );
+        }
     }
 
     async loadMenus(also_special = []) {

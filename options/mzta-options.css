@@ -253,6 +253,10 @@ label:has(input[type="checkbox"]) {
         background-color: rgb(83, 0, 35);
     }
 
+    tr.conntype_mistral_api, tr.conntype_mistral_api2{
+        background-color: rgb(102, 45, 0);
+    }
+
     .api_key-container .toggle-icon img {
         filter: invert(1);
     }

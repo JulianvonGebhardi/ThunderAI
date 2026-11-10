@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ThunderAI - __MSG_inbox_page_title__</title>
+    <link rel="stylesheet" href="mzta-inbox.css">
+    <link rel="icon" href="../../images/icon-16px.png">
+</head>
+<body>
+<div class="ia-wrap">
+    <header class="ia-header">
+        <div class="ia-brand">
+            <img src="../../images/icon-32px.png" alt="">
+            <div>
+                <h1>__MSG_inbox_page_title__</h1>
+                <div class="ia-sub">__MSG_inbox_page_subtitle__</div>
+            </div>
+        </div>
+        <div class="ia-header-right">
+            <span id="ia_provider" class="ia-provider"></span>
+            <button id="btn_settings" class="ia-btn">&#9881; __MSG_inbox_settings__</button>
+        </div>
+    </header>
+
+    <div id="ia_api_warning" class="ia-banner warning hidden">
+        <span>__MSG_inbox_error_needs_api__</span>
+        <button id="btn_api_settings" class="ia-btn small">__MSG_inbox_open_settings__</button>
+    </div>
+
+    <section class="ia-card ia-scope" id="ia_scope">
+        <div class="ia-field grow">
+            <span class="ia-field-label">__MSG_inbox_scope_accounts__</span>
+            <div id="ia_accounts" class="ia-chips"></div>
+        </div>
+        <div class="ia-field">
+            <label for="ia_folder_mode">__MSG_inbox_scope_folders__</label>
+            <select id="ia_folder_mode">
+                <option value="inbox">__MSG_inbox_scope_folders_inbox__</option>
+                <option value="inbox_sub">__MSG_inbox_scope_folders_inbox_sub__</option>
+                <option value="all">__MSG_inbox_scope_folders_all__</option>
+                <option value="custom">__MSG_inbox_scope_folders_custom__</option>
+            </select>
+        </div>
+        <div class="ia-field hidden" id="ia_custom_folders_field">
+            <label for="ia_custom_folders">__MSG_inbox_scope_folders_choose__</label>
+            <select id="ia_custom_folders" multiple></select>
+        </div>
+        <div class="ia-field">
+            <label for="ia_days">__MSG_inbox_scope_period__</label>
+            <select id="ia_days">
+                <option value="1">__MSG_inbox_scope_period_1__</option>
+                <option value="7">__MSG_inbox_scope_period_7__</option>
+                <option value="30">__MSG_inbox_scope_period_30__</option>
+                <option value="90">__MSG_inbox_scope_period_90__</option>
+                <option value="365">__MSG_inbox_scope_period_365__</option>
+                <option value="0">__MSG_inbox_scope_period_all__</option>
+            </select>
+        </div>
+        <div class="ia-field">
+            <label for="ia_max">__MSG_inbox_scope_max__</label>
+            <input type="number" id="ia_max" min="10" max="3000" step="10">
+        </div>
+        <div class="ia-field">
+            <label class="ia-inline"><input type="checkbox" id="ia_unread_only"> __MSG_inbox_scope_unread_only__</label>
+        </div>
+    </section>
+
+    <nav class="ia-tabs" id="ia_tabs">
+        <button class="ia-tab-btn active" data-tab="triage">&#10024; __MSG_inbox_tab_triage__</button>
+        <button class="ia-tab-btn" data-tab="senders">&#129529; __MSG_inbox_tab_senders__</button>
+        <button class="ia-tab-btn" data-tab="followups">&#8617; __MSG_inbox_tab_followups__<span class="ia-count hidden" id="ia_followups_count">0</span></button>
+        <button class="ia-tab-btn" data-tab="activity">&#128339; __MSG_inbox_tab_activity__</button>
+    </nav>
+
+    <!-- TRIAGE -->
+    <section id="tab_triage" class="ia-tab">
+        <div class="ia-actions-row">
+            <button id="btn_scan" class="ia-btn primary">&#10024; __MSG_inbox_btn_scan__</button>
+            <button id="btn_stop" class="ia-btn danger hidden">&#9632; __MSG_inbox_btn_stop__</button>
+            <label class="ia-inline" title="__MSG_inbox_use_cache_info__"><input type="checkbox" id="ia_use_cache" checked> __MSG_inbox_use_cache__</label>
+            <span class="spacer"></span>
+            <button id="btn_brief" class="ia-btn" disabled>&#128221; __MSG_inbox_btn_brief__</button>
+            <button id="btn_apply_suggested" class="ia-btn accent" disabled>&#10004; __MSG_inbox_btn_apply_suggested__</button>
+        </div>
+        <div id="ia_progress" class="ia-progress hidden">
+            <div class="bar"><div id="ia_progress_bar"></div></div>
+            <span id="ia_progress_text"></span>
+        </div>
+        <div id="ia_brief" class="ia-card ia-brief hidden">
+            <div class="ia-brief-head"><b>&#128221; __MSG_inbox_brief_title__</b><button id="btn_brief_close" class="ia-btn small ghost">&#10005;</button></div>
+            <div id="ia_brief_content"></div>
+        </div>
+        <div id="ia_cat_summary" class="ia-cat-summary"></div>
+        <div id="ia_bulkbar" class="ia-bulkbar hidden">
+            <span class="ia-sel-count" id="ia_sel_count"></span>
+            <button class="ia-btn small" data-bulk="read">&#9993; __MSG_inbox_act_read__</button>
+            <button class="ia-btn small" data-bulk="unread">__MSG_inbox_act_unread__</button>
+            <button class="ia-btn small" data-bulk="flag">&#9873; __MSG_inbox_act_flag__</button>
+            <button class="ia-btn small" data-bulk="archive">&#128230; __MSG_inbox_act_archive__</button>
+            <button class="ia-btn small" data-bulk="folder">&#128193; __MSG_inbox_act_move__</button>
+            <button class="ia-btn small" data-bulk="tag">&#127991; __MSG_inbox_act_tag__</button>
+            <button class="ia-btn small" data-bulk="trash">&#128465; __MSG_inbox_act_trash__</button>
+            <button class="ia-btn small" data-bulk="junk">&#9888; __MSG_inbox_act_junk__</button>
+            <select id="ia_bulk_category" class="ia-btn small"></select>
+            <span class="spacer"></span>
+            <button class="ia-btn small ghost" id="btn_clear_selection">__MSG_inbox_clear_selection__</button>
+        </div>
+        <div id="ia_results"></div>
+        <div id="ia_empty" class="ia-empty">
+            <h2>__MSG_inbox_empty_title__</h2>
+            <div>__MSG_inbox_empty_hint__</div>
+            <div class="ia-features">
+                <div class="ia-feature"><b>&#10024; __MSG_inbox_feature_triage__</b>__MSG_inbox_feature_triage_desc__</div>
+                <div class="ia-feature"><b>&#129529; __MSG_inbox_feature_cleanup__</b>__MSG_inbox_feature_cleanup_desc__</div>
+                <div class="ia-feature"><b>&#8617; __MSG_inbox_feature_followups__</b>__MSG_inbox_feature_followups_desc__</div>
+                <div class="ia-feature"><b>&#128737; __MSG_inbox_feature_safe__</b>__MSG_inbox_feature_safe_desc__</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SENDERS -->
+    <section id="tab_senders" class="ia-tab hidden">
+        <div class="ia-actions-row">
+            <button id="btn_scan_senders" class="ia-btn primary">&#128269; __MSG_inbox_btn_scan_senders__</button>
+            <input type="search" id="ia_sender_filter" placeholder="__MSG_inbox_sender_filter__">
+            <label class="ia-inline"><input type="checkbox" id="ia_senders_lists_only"> __MSG_inbox_senders_lists_only__</label>
+            <span class="spacer"></span>
+            <span class="ia-muted" id="ia_senders_info"></span>
+        </div>
+        <div id="ia_senders_progress" class="ia-progress hidden">
+            <div class="bar"><div id="ia_senders_progress_bar"></div></div>
+            <span id="ia_senders_progress_text"></span>
+        </div>
+        <div id="ia_quickwins" class="ia-quickwins"></div>
+        <div id="ia_senders_bulkbar" class="ia-bulkbar hidden">
+            <span class="ia-sel-count" id="ia_senders_sel_count"></span>
+            <button class="ia-btn small" data-sbulk="read">&#9993; __MSG_inbox_act_read__</button>
+            <button class="ia-btn small" data-sbulk="archive">&#128230; __MSG_inbox_act_archive__</button>
+            <button class="ia-btn small" data-sbulk="folder">&#128193; __MSG_inbox_act_move__</button>
+            <button class="ia-btn small" data-sbulk="trash">&#128465; __MSG_inbox_act_trash__</button>
+        </div>
+        <div class="ia-card" style="padding:0" id="ia_senders_card">
+            <table class="ia-table" id="ia_senders_table">
+                <thead><tr>
+                    <th><input type="checkbox" id="ia_senders_check_all"></th>
+                    <th>__MSG_inbox_col_sender__</th>
+                    <th>__MSG_inbox_col_emails__</th>
+                    <th>__MSG_inbox_col_unread__</th>
+                    <th>__MSG_inbox_col_newest__</th>
+                    <th style="text-align:right">__MSG_inbox_col_actions__</th>
+                </tr></thead>
+                <tbody id="ia_senders_body"><tr><td colspan="6" class="ia-empty">__MSG_inbox_senders_empty__</td></tr></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FOLLOW-UPS -->
+    <section id="tab_followups" class="ia-tab hidden">
+        <div class="ia-card">
+            <div class="ia-actions-row" style="margin-bottom:6px">
+                <b>&#8617; __MSG_inbox_needs_reply_title__</b>
+                <span class="ia-muted">__MSG_inbox_needs_reply_info__</span>
+            </div>
+            <div id="ia_needs_reply"></div>
+        </div>
+        <div class="ia-card">
+            <div class="ia-actions-row" style="margin-bottom:6px">
+                <b>&#9203; __MSG_inbox_waiting_title__</b>
+                <span class="ia-muted">__MSG_inbox_waiting_info__</span>
+                <span class="spacer"></span>
+                <label class="ia-inline">__MSG_inbox_followup_days__
+                    <select id="ia_followup_days">
+                        <option value="7">7</option>
+                        <option value="14">14</option>
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                    </select>
+                </label>
+                <button id="btn_scan_followups" class="ia-btn primary">&#128269; __MSG_inbox_btn_scan_followups__</button>
+            </div>
+            <div id="ia_followups_progress" class="ia-progress hidden">
+                <div class="bar"><div id="ia_followups_progress_bar"></div></div>
+                <span id="ia_followups_progress_text"></span>
+            </div>
+            <div id="ia_waiting"></div>
+        </div>
+    </section>
+
+    <!-- ACTIVITY -->
+    <section id="tab_activity" class="ia-tab hidden">
+        <div class="ia-actions-row">
+            <span class="ia-muted">__MSG_inbox_activity_info__</span>
+            <span class="spacer"></span>
+            <button id="btn_refresh_activity" class="ia-btn small">&#8635; __MSG_inbox_refresh__</button>
+            <button id="btn_clear_activity" class="ia-btn small danger">__MSG_inbox_activity_clear__</button>
+        </div>
+        <div class="ia-card" style="padding:0" id="ia_activity"></div>
+    </section>
+</div>
+
+<!-- Confirm plan dialog -->
+<dialog id="dlg_plan">
+    <form method="dialog">
+        <div class="ia-dlg-body">
+            <h2 id="dlg_plan_title">__MSG_inbox_confirm_title__</h2>
+            <div id="dlg_plan_intro" class="ia-muted"></div>
+            <ul class="ia-plan-list" id="dlg_plan_list"></ul>
+            <div class="ia-note" id="dlg_plan_note">__MSG_inbox_confirm_note__</div>
+        </div>
+        <div class="ia-dlg-foot">
+            <button value="cancel" class="ia-btn">__MSG_inbox_cancel__</button>
+            <button value="ok" id="dlg_plan_ok" class="ia-btn primary">__MSG_inbox_apply__</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Folder picker -->
+<dialog id="dlg_folder">
+    <form method="dialog">
+        <div class="ia-dlg-body">
+            <h2>__MSG_inbox_pick_folder_title__</h2>
+            <select id="dlg_folder_select" size="12" style="width:100%"></select>
+            <label class="ia-inline">__MSG_inbox_pick_folder_or_name__ <input type="text" id="dlg_folder_name" style="flex:1"></label>
+            <div class="ia-note">__MSG_inbox_pick_folder_name_info__</div>
+        </div>
+        <div class="ia-dlg-foot">
+            <button value="cancel" class="ia-btn">__MSG_inbox_cancel__</button>
+            <button value="ok" id="dlg_folder_ok" class="ia-btn primary">__MSG_inbox_move_here__</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Tag picker -->
+<dialog id="dlg_tag">
+    <form method="dialog">
+        <div class="ia-dlg-body">
+            <h2>__MSG_inbox_pick_tag_title__</h2>
+            <select id="dlg_tag_select" size="8" style="width:100%"></select>
+            <label class="ia-inline">__MSG_inbox_pick_tag_new__ <input type="text" id="dlg_tag_new" style="flex:1"></label>
+        </div>
+        <div class="ia-dlg-foot">
+            <button value="cancel" class="ia-btn">__MSG_inbox_cancel__</button>
+            <button value="ok" id="dlg_tag_ok" class="ia-btn primary">__MSG_inbox_apply__</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Reply draft -->
+<dialog id="dlg_reply">
+    <form method="dialog">
+        <div class="ia-dlg-body">
+            <h2 id="dlg_reply_title">__MSG_inbox_reply_title__</h2>
+            <div class="ia-muted" id="dlg_reply_subject"></div>
+            <label class="ia-field-label" for="dlg_reply_intent">__MSG_inbox_reply_intent__</label>
+            <textarea id="dlg_reply_intent" rows="2" placeholder="__MSG_inbox_reply_intent_placeholder__"></textarea>
+            <div><button type="button" id="dlg_reply_generate" class="ia-btn">&#10024; __MSG_inbox_reply_generate__</button> <span class="ia-muted" id="dlg_reply_status"></span></div>
+            <textarea id="dlg_reply_text" rows="12"></textarea>
+        </div>
+        <div class="ia-dlg-foot">
+            <button value="cancel" class="ia-btn">__MSG_inbox_cancel__</button>
+            <button value="ok" id="dlg_reply_ok" class="ia-btn primary" disabled>__MSG_inbox_reply_open__</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Unsubscribe -->
+<dialog id="dlg_unsub">
+    <form method="dialog">
+        <div class="ia-dlg-body">
+            <h2>__MSG_inbox_unsub_title__</h2>
+            <div id="dlg_unsub_info"></div>
+            <label class="ia-inline"><input type="checkbox" id="dlg_unsub_archive" checked> <span id="dlg_unsub_archive_label"></span></label>
+            <div class="ia-note">__MSG_inbox_unsub_note__</div>
+        </div>
+        <div class="ia-dlg-foot">
+            <button value="cancel" class="ia-btn">__MSG_inbox_cancel__</button>
+            <button value="ok" id="dlg_unsub_ok" class="ia-btn primary">__MSG_inbox_unsub_confirm__</button>
+        </div>
+    </form>
+</dialog>
+
+<div id="ia_toast" class="ia-toast hidden"><span id="ia_toast_text"></span><button id="ia_toast_undo" class="hidden">__MSG_inbox_undo__</button></div>
+
+<script src="../../api_webchat/markdown-it.min.js"></script>
+<script src="mzta-inbox.js" type="module"></script>
+<script src="../../js/mzta-i18n.js"></script>
+</body>
+</html>

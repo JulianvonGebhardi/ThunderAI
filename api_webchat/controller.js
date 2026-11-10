@@ -54,6 +54,7 @@ const worker_path_map = {
     ollama: '../js/workers/model-worker-ollama.js',
     openai_comp: '../js/workers/model-worker-openai_comp.js',
     anthropic: '../js/workers/model-worker-anthropic.js',
+    mistral: '../js/workers/model-worker-mistral.js',
 };
 
 const worker_path = worker_path_map[integration];
@@ -113,12 +114,11 @@ if (worker) {
             case 'ollama': llmName = "Ollama Local"; break;
             case 'openai_comp': llmName = prefs_api.openai_comp_chat_name || "OpenAI Comp"; break;
             case 'anthropic': llmName = "Claude"; break;
+            case 'mistral': llmName = "Mistral AI"; break;
         }
         messagesArea.setLLMName(llmName);
         messagesArea.setHideThinking(!!prefs_api.hide_thinking);
         
-        document.title += " [" + llmName + " | " + decodeURIComponent(prompt_name) + "]";
-
         document.title += " [" + llmName + " | " + decodeURIComponent(prompt_name) + "]";
 
         let workerInitMessage = {
@@ -158,6 +158,13 @@ if (worker) {
                 { key: 'max_tokens', labelKey: 'prefs_OptionText_anthropic_max_tokens', type: 'number_gt_zero' },
                 { key: 'temperature', labelKey: 'prefs_api_temperature', type: 'string' },
                 { key: 'extended_thinking_budget', labelKey: 'prefs_OptionText_anthropic_extended_thinking_budget', type: 'number_gt_zero' }
+            ],
+            mistral: [
+                { key: 'system_prompt', labelKey: 'Mistral_System_Prompt', type: 'string' },
+                { key: 'temperature', labelKey: 'prefs_api_temperature', type: 'string' },
+                { key: 'max_tokens', labelKey: 'prefs_OptionText_mistral_max_tokens', type: 'number_gt_zero' },
+                { key: 'reasoning_effort', labelKey: 'prefs_OptionText_mistral_reasoning_effort', type: 'string' },
+                { key: 'safe_prompt', labelKey: 'prefs_OptionText_mistral_safe_prompt', type: 'boolean' }
             ]
         };
 
@@ -209,7 +216,8 @@ if (worker) {
             google_gemini: "Google Gemini API",
             ollama: "Ollama API",
             openai_comp: "OpenAI Compatible API",
-            anthropic: "Claude API"
+            anthropic: "Claude API",
+            mistral: "Mistral AI API"
         };
         
         messagesArea.appendUserMessage(getAPIsInitMessageString({

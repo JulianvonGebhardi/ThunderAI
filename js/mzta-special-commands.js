@@ -23,7 +23,7 @@
  } from "../options/mzta-options-default.js";
  import { taLogger } from './mzta-logger.js';
 
- function validateAPIConfig(llm, prefs) {
+ export function validateAPIConfig(llm, prefs) {
     switch (llm) {
         case 'chatgpt_api':
             if (!prefs.chatgpt_api_key) return browser.i18n.getMessage('chatgpt_empty_apikey');
@@ -46,6 +46,10 @@
             if (!prefs.anthropic_model)   return browser.i18n.getMessage('anthropic_empty_model');
             if (!prefs.anthropic_version) return browser.i18n.getMessage('anthropic_empty_version');
             break;
+        case 'mistral_api':
+            if (!prefs.mistral_api_key) return browser.i18n.getMessage('mistral_empty_apikey');
+            if (!prefs.mistral_model)   return browser.i18n.getMessage('mistral_empty_model');
+            break;
     }
     return null;
  }
@@ -60,16 +64,22 @@
     do_debug = false;
     config = {};
 
+    json_mode = false;
+
     constructor(args = {}) {
         let {
             prompt = '',
             llm = '',
             do_debug = false,
-            config = {}
+            config = {},
+            json_mode = false
         } = args;
         this.prompt = prompt;
         this.llm = llm;
         this.config = config;
+        // When true, providers that support it (Mistral) are asked for a JSON-only response.
+        // Other workers ignore the flag, so callers must still parse defensively.
+        this.json_mode = json_mode;
         this.do_debug = do_debug;
         this.logger = new taLogger('mzta_specialCommand', do_debug);
 
@@ -79,6 +89,7 @@
             ollama_api: './workers/model-worker-ollama.js',
             openai_comp_api: './workers/model-worker-openai_comp.js',
             anthropic_api: './workers/model-worker-anthropic.js',
+            mistral_api: './workers/model-worker-mistral.js',
         };
 
         const worker_path = worker_path_map[this.llm];
@@ -168,6 +179,9 @@
                     case 'newToken':
                         this.full_message += payload.token;
                         break;
+                    case 'newThinkingToken':
+                        // Reasoning output is not part of the answer for special commands.
+                        break;
                     case 'tokensDone':
                         this.logger.log("tokensDone: " + this.full_message);
                         resolve(this.full_message); // Resolve the promise with the full message
@@ -193,11 +207,20 @@
 
         try {
             // console.log('[ThunderAI] Sending prompt to worker:', this.prompt);
-            this.worker.postMessage({ type: 'chatMessage', message: this.prompt });
+            this.worker.postMessage({ type: 'chatMessage', message: this.prompt, json_mode: this.json_mode });
         } catch (error) {
             console.error('[ThunderAI] Failed to send message to worker:', error);
             reject(error);
         }
         });
+    }
+ 
+    // Stops the worker. Callers that run many commands in a row (e.g. the Inbox Assistant)
+    // must call this to release the worker thread once the response has been received.
+    terminate() {
+        if (this.worker) {
+            this.worker.terminate();
+            this.worker = null;
+        }
     }
  }

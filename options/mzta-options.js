@@ -291,7 +291,7 @@ function updateDescription(){
   let conntype_select = document.getElementById("connection_type");
   let conntype = conntype_select.value;
   let desc = document.getElementById("miczDescription");
-  const types = ["chatgpt_web", "chatgpt_api", "ollama_api", "openai_comp_api", "google_gemini_api", "anthropic_api"];
+  const types = ["chatgpt_web", "chatgpt_api", "ollama_api", "openai_comp_api", "google_gemini_api", "anthropic_api", "mistral_api"];
   for(let t of types){
     desc.querySelectorAll(".conntype_" + t).forEach(el => {
       el.style.display = (conntype === t) ? "" : "none";

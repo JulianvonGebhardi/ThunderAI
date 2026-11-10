@@ -2386,5 +2386,93 @@
   "menu_order_icon_none": {
     "message": "(none)",
     "description": "Dropdown option meaning no custom icon is selected for the context menu item"
+  },
+  "prefs_Connection_type_Mistral_API": {
+    "message": "Mistral AI API",
+    "description": "Connection type option for the native Mistral AI integration"
+  },
+  "prefs_Mistral_API_Key": {
+    "message": "Mistral AI API Key",
+    "description": "Label of the Mistral AI API key field in the options page"
+  },
+  "prefs_Mistral_API_Key_Info": {
+    "message": "Create your API key in the Mistral AI console:",
+    "description": "Hint below the Mistral API key field, followed by a link to console.mistral.ai"
+  },
+  "Mistral_Models": {
+    "message": "Mistral AI Model",
+    "description": "Label of the Mistral model selector"
+  },
+  "Mistral_Models_Fetch": {
+    "message": "Update Mistral AI Models list",
+    "description": "Button that downloads the list of available Mistral models"
+  },
+  "Mistral_Models_Info": {
+    "message": "Models ending in \"-latest\" always point to the newest version and are listed first. A brain icon marks reasoning models.",
+    "description": "Hint below the Mistral model selector"
+  },
+  "Mistral_Models_Error_fetching": {
+    "message": "Error trying to fetch Mistral AI models",
+    "description": "Error shown when the Mistral model list cannot be downloaded"
+  },
+  "prefs_mistral_temperature_Info": {
+    "message": "Sampling temperature. Mistral recommends values between 0.0 and 0.7: lower values give more focused and deterministic answers, higher values more creative ones. Leave empty to use the model default.",
+    "description": "Hint below the Mistral temperature field"
+  },
+  "Mistral_System_Prompt": {
+    "message": "System Prompt",
+    "description": "Label of the Mistral system prompt field"
+  },
+  "Mistral_System_Prompt_Info": {
+    "message": "Optional instructions sent as a system message before every conversation, for example the role or tone you want Mistral to use.",
+    "description": "Hint below the Mistral system prompt field"
+  },
+  "prefs_OptionText_mistral_max_tokens": {
+    "message": "Max tokens",
+    "description": "Label of the Mistral max tokens field"
+  },
+  "prefs_OptionText_mistral_max_tokens_Info": {
+    "message": "Maximum number of tokens to generate. 0 means no limit (model default). The prompt tokens plus max tokens cannot exceed the model's context length.",
+    "description": "Hint below the Mistral max tokens field"
+  },
+  "prefs_OptionText_mistral_reasoning_effort": {
+    "message": "Reasoning effort",
+    "description": "Label of the Mistral reasoning effort selector"
+  },
+  "prefs_OptionText_mistral_reasoning_effort_default": {
+    "message": "Model default (not sent)",
+    "description": "Default option of the Mistral reasoning effort selector: the parameter is not sent"
+  },
+  "prefs_OptionText_mistral_reasoning_effort_Info": {
+    "message": "Only for models that support adjustable reasoning. Higher effort can give better answers but is slower and uses more tokens. Leave the default if you are not sure: unsupported models may reject this parameter.",
+    "description": "Hint below the Mistral reasoning effort selector"
+  },
+  "prefs_OptionText_mistral_safe_prompt": {
+    "message": "Safe prompt",
+    "description": "Label of the Mistral safe prompt checkbox"
+  },
+  "prefs_OptionText_mistral_safe_prompt_Info": {
+    "message": "Ask Mistral to inject its safety prompt before the conversation.",
+    "description": "Hint next to the Mistral safe prompt checkbox"
+  },
+  "mistral_empty_apikey": {
+    "message": "You've not added an API Key for the Mistral AI API. Please insert one in the options page.",
+    "description": "Error when the Mistral API key is missing"
+  },
+  "mistral_empty_model": {
+    "message": "You've not chosen a model for the Mistral AI API. Please choose one in the options page.",
+    "description": "Error when the Mistral model is missing"
+  },
+  "mistral_api_request_failed": {
+    "message": "Mistral AI API request failed",
+    "description": "Prefix of errors returned by the Mistral API"
+  },
+  "ask_mistral_api_permission_1": {
+    "message": "To use the Mistral AI API integration, you need to grant the required permission.",
+    "description": "Banner asking for the mistral.ai host permission"
+  },
+  "prefsInfoDesc_9": {
+    "message": "To use the Mistral AI API, you need a Mistral AI API Key and must choose a model. Mistral AI is a European provider: requests go directly from Thunderbird to api.mistral.ai.",
+    "description": "Description shown in the options page when the Mistral connection type is selected"
   }
 }

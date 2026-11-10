@@ -24,6 +24,10 @@ tr.conntype_anthropic_api, tr.conntype_anthropic_api2{
     background-color: rgb(255, 168, 204) !important;
 }
 
+tr.conntype_mistral_api, tr.conntype_mistral_api2{
+    background-color: rgb(255, 190, 110) !important;
+}
+
 #chatgpt_model_fetch_loading{
     display: none;
     font-style: italic;
@@ -120,6 +124,10 @@ span.opt_title{
 
     tr.conntype_anthropic_api, tr.conntype_anthropic_api2{
         background-color: rgb(83, 0, 35) !important;
+    }
+
+    tr.conntype_mistral_api, tr.conntype_mistral_api2{
+        background-color: rgb(102, 45, 0) !important;
     }
 
     .api_key-container .toggle-icon img {
